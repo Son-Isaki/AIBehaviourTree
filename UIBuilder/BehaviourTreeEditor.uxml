@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/RPG/UIBuilder/BehaviourTreeEditor.uss?fileID=7433441132597879392&amp;guid=bba053364b387a84088c41a0498789ea&amp;type=3#BehaviourTreeEditor" />
+    <uie:Toolbar>
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="tree-title" style="-unity-text-align: middle-left; margin-left: 10px; margin-right: 10px;" />
+        <uie:ToolbarMenu display-tooltip-when-elided="True" text="Asset" />
+        <uie:ToolbarButton text="Fit view" display-tooltip-when-elided="true" enable-rich-text="true" name="fit-view-button" />
+    </uie:Toolbar>
+    <RPG.Node.SplitView fixed-pane-initial-dimension="340" style="flex-direction: row; align-items: stretch; justify-content: space-around; flex-grow: 1;">
+        <ui:VisualElement name="left-panel" style="flex-grow: 1; align-items: stretch; flex-shrink: 0;">
+            <RPG.Node.SplitView orientation="Vertical" fixed-pane-initial-dimension="460">
+                <ui:VisualElement name="inspector-container">
+                    <ui:Label text="Inspector" display-tooltip-when-elided="True" class="label-header" style="border-left-color: rgb(89, 89, 89); border-right-color: rgb(89, 89, 89); border-top-color: rgb(89, 89, 89); border-bottom-color: rgb(89, 89, 89); border-bottom-width: 1px;" />
+                    <RPG.Node.InspectorView class="container-content" style="flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="blackboard-container">
+                    <ui:Label text="Blackboard" display-tooltip-when-elided="True" class="label-header" style="border-left-color: rgb(89, 89, 89); border-right-color: rgb(89, 89, 89); border-top-color: rgb(89, 89, 89); border-bottom-color: rgb(89, 89, 89); border-bottom-width: 1px;" />
+                    <ui:IMGUIContainer name="blackboard" class="container-content" />
+                </ui:VisualElement>
+            </RPG.Node.SplitView>
+        </ui:VisualElement>
+        <ui:VisualElement name="right-panel" style="flex-grow: 1;">
+            <ui:Label text="Tree View" display-tooltip-when-elided="True" class="label-header" style="border-left-color: rgb(89, 89, 89); border-right-color: rgb(89, 89, 89); border-top-color: rgb(89, 89, 89); border-bottom-color: rgb(89, 89, 89); border-bottom-width: 1px;" />
+            <RPG.Node.BehaviourTreeView focusable="True" style="flex-grow: 1;" />
+        </ui:VisualElement>
+    </RPG.Node.SplitView>
+</ui:UXML>

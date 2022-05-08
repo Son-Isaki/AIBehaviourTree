@@ -1,0 +1,28 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace RPG.Node
+{
+	public class BehaviourTreeRunner : MonoBehaviour
+	{
+		[field: SerializeField] public BehaviourTree Tree { get; private set; }
+
+		private void Start()
+		{
+			if (Tree == null)
+				return;
+
+			Tree = Tree.Clone();
+			Tree.Bind();
+		}
+
+		private void Update()
+		{
+			if (Tree == null)
+				return;
+
+			Tree.Update();
+		}
+	}
+}
