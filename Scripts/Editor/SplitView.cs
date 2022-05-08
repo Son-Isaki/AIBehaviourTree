@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	public class SplitView : TwoPaneSplitView
 	{

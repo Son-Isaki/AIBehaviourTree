@@ -7,7 +7,7 @@ using UnityEditor;
 using System;
 using System.Linq;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	public class BehaviourTreeView : GraphView
 	{
@@ -20,7 +20,7 @@ namespace RPG.Node
 
 		public BehaviourTreeView()
 		{
-			var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeWindow.BASE_PATH + "BehaviourTreeEditor.uss");
+			var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeWindow.UIBUILDER_PATH + "BehaviourTreeEditor.uss");
 			styleSheets.Add(styleSheet);
 
 			GridBackground grid = new GridBackground();

@@ -7,7 +7,7 @@ using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	public class NodeView : UnityEditor.Experimental.GraphView.Node
 	{
@@ -19,7 +19,7 @@ namespace RPG.Node
 
 		private const Orientation portOrientation = Orientation.Horizontal;
 
-		public NodeView(Node node) : base(BehaviourTreeWindow.BASE_PATH + "NodeView.uxml")
+		public NodeView(Node node) : base(BehaviourTreeWindow.UIBUILDER_PATH + "NodeView.uxml")
 		{
 			this.node = node;
 			this.title = node.name;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
     public abstract class DecoratorNode : Node
     {

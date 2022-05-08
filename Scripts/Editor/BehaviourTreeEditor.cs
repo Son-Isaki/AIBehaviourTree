@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	[CustomEditor(typeof(BehaviourTree), true)]
     public class BehaviourTreeEditor : Editor

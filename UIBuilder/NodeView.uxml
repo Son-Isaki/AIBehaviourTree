@@ -1,5 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="project://database/Assets/RPG/UIBuilder/NodeView.uss?fileID=7433441132597879392&amp;guid=0a0cace5803ef2f428522d57ba563f66&amp;type=3#NodeView" />
     <ui:VisualElement name="node-state" />
     <ui:VisualElement name="node-border">
         <ui:VisualElement name="title">

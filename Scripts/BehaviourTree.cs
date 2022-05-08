@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
-	[CreateAssetMenu(menuName = "RPG/AI/Behaviour Tree")]
+	[CreateAssetMenu(menuName = "Isaki/AI Behaviour Tree")]
 	public class BehaviourTree : ScriptableObject
 	{
 		[SerializeField] public Node rootNode;

@@ -7,7 +7,7 @@ using System;
 using UnityEditor.Experimental.GraphView;
 using System.Linq;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
 	{

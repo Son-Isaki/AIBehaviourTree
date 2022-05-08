@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	public class InspectorView : VisualElement
 	{

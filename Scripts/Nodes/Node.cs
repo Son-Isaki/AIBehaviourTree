@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor.UIElements;
 using UnityEditor;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
     public abstract class Node : ScriptableObject
     {

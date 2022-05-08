@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
 	public class FindTargetLocationNode : ActionNode
 	{

@@ -4,11 +4,12 @@ using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace RPG.Node
+namespace AIBehaviourTree.Node
 {
     public class BehaviourTreeWindow : EditorWindow
     {
-        public const string BASE_PATH = "Assets/RPG/UIBuilder/";
+        public const string BASE_PATH = "Assets/Packages/UnityAIBehaviourTree/";
+        public const string UIBUILDER_PATH = BASE_PATH + "UIBuilder/";
 
         public static Vector2 CurrentPosition {
 			get {
@@ -30,8 +31,8 @@ namespace RPG.Node
         public static void OpenWindow()
         {
             CurrentWindow = GetWindow<BehaviourTreeWindow>();
-            CurrentWindow.titleContent = new GUIContent("BehaviourTreeEditor");
-            CurrentWindow.position = new Rect(0, 0, 800, 600);
+            CurrentWindow.titleContent = new GUIContent("AI Behaviour Tree");
+            //CurrentWindow.position = new Rect(0, 0, 800, 600);
         }
 
         [OnOpenAsset]
@@ -51,12 +52,12 @@ namespace RPG.Node
             VisualElement root = rootVisualElement;
 
             // Import UXML
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BASE_PATH + "BehaviourTreeEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UIBUILDER_PATH + "BehaviourTreeEditor.uxml");
             visualTree.CloneTree(root);
 
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BASE_PATH + "BehaviourTreeEditor.uss");
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(UIBUILDER_PATH + "BehaviourTreeEditor.uss");
             root.styleSheets.Add(styleSheet);
 
             treeTitleLabel = root.Q<Label>("tree-title");
