@@ -29,42 +29,22 @@ namespace AIBehaviourTree.Node
 				new SearchTreeGroupEntry(new GUIContent("Create node"), 0),
 			};
 
-			{
-				tree.Add(new SearchTreeGroupEntry(new GUIContent("Action"), 1));
+			Dictionary<string, List<Type>> typesList = new Dictionary<string, List<Type>>();
 
-				var types = TypeCache.GetTypesDerivedFrom<ActionNode>().ToList();
-				types.Sort((Type a, Type b) => { return a.Name.CompareTo(b.Name); });
-				foreach (var type in types)
-				{
-					tree.Add(new SearchTreeEntry(new GUIContent(NodeUtility.NicifyTypeName(type), indentationIcon))
-					{
-						userData = type,
-						level = 2,
-					});
-				}
+			AddTypesOfType(typeof(ActionNode), ref typesList);
+			AddTypesOfType(typeof(CompositeNode), ref typesList);
+			AddTypesOfType(typeof(DecoratorNode), ref typesList);
+
+			foreach (var types in typesList)
+			{
+				typesList[types.Key].Sort((Type a, Type b) => { return a.Name.CompareTo(b.Name); });
 			}
 
+			foreach (var types in typesList.OrderBy(t => t.Key))
 			{
-				tree.Add(new SearchTreeGroupEntry(new GUIContent("Composite"), 1));
+				tree.Add(new SearchTreeGroupEntry(new GUIContent(types.Key), 1));
 
-				var types = TypeCache.GetTypesDerivedFrom<CompositeNode>().ToList();
-				types.Sort((Type a, Type b) => { return a.Name.CompareTo(b.Name); });
-				foreach (var type in types)
-				{
-					tree.Add(new SearchTreeEntry(new GUIContent(NodeUtility.NicifyTypeName(type), indentationIcon))
-					{
-						userData = type,
-						level = 2,
-					});
-				}
-			}
-
-			{
-				tree.Add(new SearchTreeGroupEntry(new GUIContent("Decorator"), 1));
-
-				var types = TypeCache.GetTypesDerivedFrom<DecoratorNode>().ToList();
-				types.Sort((Type a, Type b) => { return a.Name.CompareTo(b.Name); });
-				foreach (var type in types)
+				foreach (var type in types.Value)
 				{
 					tree.Add(new SearchTreeEntry(new GUIContent(NodeUtility.NicifyTypeName(type), indentationIcon))
 					{
@@ -75,6 +55,37 @@ namespace AIBehaviourTree.Node
 			}
 
 			return tree;
+		}
+
+		private static void AddTypesOfType(Type type, ref Dictionary<string, List<Type>> typesList)
+		{
+			foreach (var t in TypeCache.GetTypesDerivedFrom(type))
+			{
+				if (t.CustomAttributes.ToList().Count > 0)
+				{
+					foreach (var attribute in t.CustomAttributes.ToList())
+					{
+						foreach (var argument in attribute.ConstructorArguments.ToList())
+						{
+							var category = argument.Value.ToString();
+							if (!typesList.ContainsKey(category))
+							{
+								typesList.Add(category, new List<Type>());
+							}
+							typesList[category].Add(t);
+						}
+					}
+				}
+				else
+				{
+					var category = "Uncategorized";
+					if (!typesList.ContainsKey(category))
+					{
+						typesList.Add(category, new List<Type>());
+					}
+					typesList[category].Add(t);
+				}
+			}
 		}
 
 		public bool OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)

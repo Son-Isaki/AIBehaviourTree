@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-    public class DebugNode : ActionNode
+	[Category("Debug")]
+	public class DebugNode : ActionNode
 	{
 		public string message;
 

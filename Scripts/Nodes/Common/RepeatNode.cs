@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
+	[Category("Logic")]
     public class RepeatNode : DecoratorNode
 	{
 		public int loopCount = 3;

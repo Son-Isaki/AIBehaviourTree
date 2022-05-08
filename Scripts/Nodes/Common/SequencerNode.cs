@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-    public class SequencerNode : CompositeNode
+	[Category("Logic")]
+	public class SequencerNode : CompositeNode
 	{
 		int current;
 

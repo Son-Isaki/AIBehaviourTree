@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-    public class WaitNode : ActionNode
+	[Category("Common")]
+	public class WaitNode : ActionNode
     {
         public float duration = 1f;
         float startTime;
