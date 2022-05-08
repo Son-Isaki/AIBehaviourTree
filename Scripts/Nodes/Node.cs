@@ -18,8 +18,8 @@ namespace AIBehaviourTree.Node
         public State CurrentState { get; protected set; } = State.Running;
         public bool HasStarted { get; protected set; } = false;
 
-        [field: SerializeField] public string Guid { get; set; }
-        [field: SerializeField] public Vector2 Position { get; set; }
+        [field: SerializeField, HideInInspector] public string Guid { get; set; }
+        [field: SerializeField, HideInInspector] public Vector2 Position { get; set; }
         [SerializeField, TextArea] private string description;
 
         public string Description => description;

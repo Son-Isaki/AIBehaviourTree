@@ -6,7 +6,7 @@ namespace AIBehaviourTree.Node
 {
     public class RootNode : Node
 	{
-		public Node child;
+		[SerializeField, HideInInspector] public Node child;
 
 		protected override void OnStart()
 		{

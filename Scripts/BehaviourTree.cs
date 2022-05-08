@@ -12,7 +12,7 @@ namespace AIBehaviourTree.Node
 		[SerializeField] public Node rootNode;
 		[SerializeField] public Node.State treeState = Node.State.Running;
 		[SerializeField] public List<Node> nodes = new List<Node>();
-		[SerializeField] public BlackboardAI blackboard;
+		[SerializeField] public Blackboard blackboard;
 
 		public Node.State Update()
 		{

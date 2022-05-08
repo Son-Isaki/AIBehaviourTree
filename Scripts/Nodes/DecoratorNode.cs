@@ -6,7 +6,7 @@ namespace AIBehaviourTree.Node
 {
     public abstract class DecoratorNode : Node
     {
-		public Node child;
+		[SerializeField, HideInInspector] public Node child;
 
 		public override Node Clone()
 		{

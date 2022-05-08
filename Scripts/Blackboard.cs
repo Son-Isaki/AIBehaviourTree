@@ -7,5 +7,6 @@ namespace AIBehaviourTree.Node
     [System.Serializable]
     public class Blackboard
     {
+        [SerializeField] public Vector3 targetPosition;
     }
 }

@@ -6,7 +6,7 @@ namespace AIBehaviourTree.Node
 {
     public abstract class CompositeNode : Node
     {
-		public List<Node> children = new List<Node>();
+		[SerializeField, HideInInspector] public List<Node> children = new List<Node>();
 
 		public override Node Clone()
 		{
