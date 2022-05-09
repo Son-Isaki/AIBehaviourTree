@@ -6,7 +6,11 @@ namespace AIBehaviourTree.Node
 {
     public class RootNode : Node
 	{
-		[SerializeField, HideInInspector] public Node child;
+		public override void Initialize()
+		{
+			base.Initialize();
+			AddOutput(DEFAULT_OUTPUT_NAME, "");
+		}
 
 		protected override void OnStart()
 		{
@@ -18,18 +22,22 @@ namespace AIBehaviourTree.Node
 
 		protected override State OnUpdate()
 		{
-			if (child == null)
+			if (Children.Count == 0)
 				return State.Success;
-			return child.Update();
+
+			for (int i = 0; i < Children.Count; i++)
+			{
+				if (Children[i].Update() == State.Failure)
+					return State.Failure;
+			}
+
+			return State.Success;
 		}
 
 		public override Node Clone()
 		{
 			RootNode node = Instantiate(this);
-			if (child != null)
-			{
-				node.child = child.Clone();
-			}
+			node.Children = Children.ConvertAll(c => c.Clone());
 			return node;
 		}
 	}

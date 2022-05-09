@@ -22,7 +22,9 @@ namespace AIBehaviourTree.Node
 
 		protected override State OnUpdate()
 		{
-			child.Update();
+			for (int i = 0; i < Children.Count; i++) 
+				Children[i].Update();
+
 			count++;
 			if (count >= loopCount)
 			{

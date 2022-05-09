@@ -6,6 +6,7 @@ using UnityEditor;
 using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using System.Linq;
 
 namespace AIBehaviourTree.Node
 {
@@ -13,17 +14,19 @@ namespace AIBehaviourTree.Node
 	{
 		public Action<NodeView> OnNodeSelected;
 		public Node node;
-		public Port input;
-		public Port output;
+		public List<Port> Inputs { get; } = new List<Port>();
+		public List<Port> Outputs { get; } = new List<Port>();
 		Label descriptionLabel;
 
 		private const Orientation portOrientation = Orientation.Horizontal;
 
-		public NodeView(Node node) : base(BehaviourTreeWindow.UIBUILDER_PATH + "NodeView.uxml")
+		public NodeView(Node _node) : base(BehaviourTreeWindow.UIBUILDER_PATH + "NodeView.uxml")
 		{
-			this.node = node;
-			this.title = node.name;
-			this.viewDataKey = node.Guid;
+			node = _node;
+			title = node.name;
+			viewDataKey = node.Guid;
+
+			node.Initialize();
 
 			if (node is RootNode)
 			{
@@ -62,51 +65,23 @@ namespace AIBehaviourTree.Node
 
 		private void CreateInputPorts()
 		{
-			if (node is ActionNode)
+			foreach (var inputData in node.Inputs)
 			{
-				input = InstantiatePort(portOrientation, Direction.Input, Port.Capacity.Single, typeof(float));
-			}
-			else if (node is CompositeNode)
-			{
-				input = InstantiatePort(portOrientation, Direction.Input, Port.Capacity.Single, typeof(float));
-			}
-			else if (node is DecoratorNode)
-			{
-				input = InstantiatePort(portOrientation, Direction.Input, Port.Capacity.Single, typeof(float));
-			}
-			else if (node is RootNode)
-			{
-			}
-
-			if (input != null)
-			{
-				input.portName = "";
+				var input = InstantiatePort(portOrientation, Direction.Input, inputData.Capacity, typeof(float));
+				input.portName = inputData.DisplayName;
 				inputContainer.Add(input);
+				Inputs.Add(input);
 			}
 		}
 
 		private void CreateOutputPorts()
 		{
-			if (node is ActionNode)
+			foreach(var outputData in node.Outputs)
 			{
-			}
-			else if (node is CompositeNode)
-			{
-				output = InstantiatePort(portOrientation, Direction.Output, Port.Capacity.Multi, typeof(float));
-			}
-			else if (node is DecoratorNode)
-			{
-				output = InstantiatePort(portOrientation, Direction.Output, Port.Capacity.Single, typeof(float));
-			}
-			else if (node is RootNode)
-			{
-				output = InstantiatePort(portOrientation, Direction.Output, Port.Capacity.Single, typeof(float));
-			}
-
-			if (output != null)
-			{
-				output.portName = "";
+				var output = InstantiatePort(portOrientation, Direction.Output, outputData.Capacity, typeof(float));
+				output.portName = outputData.DisplayName;
 				outputContainer.Add(output);
+				Outputs.Add(output);
 			}
 		}
 
@@ -127,12 +102,6 @@ namespace AIBehaviourTree.Node
 			else if (node is RootNode)
 			{
 				AddToClassList("node-root");
-			}
-
-			if (output != null)
-			{
-				output.portName = "";
-				outputContainer.Add(output);
 			}
 		}
 
@@ -156,7 +125,7 @@ namespace AIBehaviourTree.Node
 			CompositeNode composite = node as CompositeNode;
 			if (composite)
 			{
-				composite.children.Sort(SortByVerticalPosition);
+				composite.Children.Sort(SortByVerticalPosition);
 			}
 		}
 

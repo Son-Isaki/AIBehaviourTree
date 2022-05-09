@@ -10,7 +10,7 @@ namespace AIBehaviourTree.Node
     {
         public static string NicifyTypeName(Type type)
         {
-            return ObjectNames.NicifyVariableName(type.Name.Replace("Node", ""));
+            return ObjectNames.NicifyVariableName(type.Name.Replace("Node", "").Trim());
         }
     }
 }

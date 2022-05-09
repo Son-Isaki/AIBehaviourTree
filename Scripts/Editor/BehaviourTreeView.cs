@@ -88,13 +88,17 @@ namespace AIBehaviourTree.Node
 					{
 						if (parentView != null && childView != null)
 						{
-							Edge edge = parentView.output.ConnectTo(childView.input);
+							int inputIndex = 0;
+							int outputIndex = parent.Children.IndexOf(child);
+							outputIndex = Mathf.Min(outputIndex, parentView.Outputs.Count - 1);
+
+							Edge edge = parentView.Outputs[outputIndex].ConnectTo(childView.Inputs[inputIndex]);
 							AddElement(edge);
 						}
 					}
 					catch (Exception e)
 					{
-						Debug.LogError(e);
+						Debug.LogError($"{e}");
 					}
 				});
 			});

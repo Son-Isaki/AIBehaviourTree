@@ -21,7 +21,7 @@ namespace AIBehaviourTree.Node
 
 		protected override State OnUpdate()
 		{
-			var child = children[current];
+			var child = Children[current];
 
 			switch (child.Update())
 			{
@@ -36,7 +36,7 @@ namespace AIBehaviourTree.Node
 					break;
 			}
 
-			return current == children.Count ? State.Success : State.Running;
+			return current == Children.Count ? State.Success : State.Running;
 		}
 	}
 }
