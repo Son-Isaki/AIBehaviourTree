@@ -10,14 +10,7 @@ namespace AIBehaviourTree.Node
 		{
 			base.Initialize();
 			AddInput(DEFAULT_INPUT_NAME, "");
-			AddOutput(DEFAULT_OUTPUT_NAME, "");
-		}
-
-		public override Node Clone()
-		{
-			DecoratorNode node = Instantiate(this);
-			node.Children = Children.ConvertAll(c => c.Clone());
-			return node;
+			AddOutput(DEFAULT_OUTPUT_NAME, "", typeof(float));
 		}
 	}
 }

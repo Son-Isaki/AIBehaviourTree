@@ -34,6 +34,7 @@ namespace AIBehaviourTree.Node
 			AddTypesOfType(typeof(ActionNode), ref typesList);
 			AddTypesOfType(typeof(CompositeNode), ref typesList);
 			AddTypesOfType(typeof(DecoratorNode), ref typesList);
+			AddTypesOfType(typeof(VariableNode), ref typesList);
 
 			foreach (var types in typesList)
 			{

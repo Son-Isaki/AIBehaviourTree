@@ -4,12 +4,15 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-	public class RootNode : Node
+	[Category("Variable")]
+	public class BoolNode : VariableNode
 	{
+		[SerializeField] bool value;
+
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddOutput(DEFAULT_OUTPUT_NAME, "", typeof(float));
+			AddVariableOutput(typeof(bool));
 		}
 
 		protected override void OnStart()
@@ -22,16 +25,12 @@ namespace AIBehaviourTree.Node
 
 		protected override State OnUpdate()
 		{
-			if (Children.Count == 0)
-				return State.Success;
-
-			for (int i = 0; i < Children.Count; i++)
-			{
-				if (Children[i].Update() == State.Failure)
-					return State.Failure;
-			}
-
 			return State.Success;
+		}
+
+		public override object GetValue()
+		{
+			return value;
 		}
 	}
 }

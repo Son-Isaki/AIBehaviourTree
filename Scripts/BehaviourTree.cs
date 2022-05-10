@@ -6,13 +6,14 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-	[CreateAssetMenu(menuName = "Isaki/AI Behaviour Tree")]
+	[CreateAssetMenu(menuName = "Isaki/AI Behaviour Tree/Behaviour Tree", order = 0)]
 	public class BehaviourTree : ScriptableObject
 	{
-		[SerializeField] public Node rootNode;
-		[SerializeField] public Node.State treeState = Node.State.Running;
-		[SerializeField] public List<Node> nodes = new List<Node>();
-		[SerializeField] public Blackboard blackboard;
+		[SerializeField, HideInInspector] public Node rootNode;
+		[SerializeField, HideInInspector] public Node.State treeState = Node.State.Running;
+		[SerializeField, HideInInspector] public List<Node> nodes = new List<Node>();
+
+		[SerializeField, HideInInspector] private Blackboard blackboard;
 
 		public Node.State Update()
 		{
@@ -91,6 +92,11 @@ namespace AIBehaviourTree.Node
 				tree.nodes.Add(n);
 			});
 			return tree;
+		}
+
+		public void SetBlackboard(Blackboard _blackboard)
+		{
+			blackboard = _blackboard;
 		}
 
 		public void Traverse(Node node, System.Action<Node> visiter)

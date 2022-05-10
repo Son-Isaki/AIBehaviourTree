@@ -21,8 +21,12 @@ namespace AIBehaviourTree.Node
 
 		protected override State OnUpdate()
 		{
-			Debug.Log($"{message}");
 			return State.Success;
+		}
+
+		public override string GetDescription()
+		{
+			return message;
 		}
 	}
 }

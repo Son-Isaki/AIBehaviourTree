@@ -32,5 +32,17 @@ namespace AIBehaviourTree.Node
 			}
 			return State.Running;
 		}
+
+		public override string GetDescription()
+		{
+			if (loopCount <= 0)
+			{
+				return $"Repeat indefinitely";
+			}
+			else
+			{
+				return $"Repeat {loopCount} times";
+			}
+		}
 	}
 }

@@ -5,6 +5,7 @@ using UnityEditor.UIElements;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
+using System;
 
 namespace AIBehaviourTree.Node
 {
@@ -25,11 +26,11 @@ namespace AIBehaviourTree.Node
 
         [field: SerializeField, HideInInspector] public string Guid { get; set; }
         [field: SerializeField, HideInInspector] public Vector2 Position { get; set; }
-        [SerializeField, TextArea] private string description;
+        [SerializeField, HideInInspector] private string description;
 
         public string Description => description;
 
-        public Blackboard blackboard;
+        [HideInInspector] public Blackboard blackboard;
 
         protected abstract void OnStart();
         protected abstract void OnStop();
@@ -75,14 +76,16 @@ namespace AIBehaviourTree.Node
             return CurrentState;
         }
 
-        public virtual Node Clone()
+        public Node Clone()
         {
-            return Instantiate(this);
+            var node = Instantiate(this);
+            node.Children = Children.ConvertAll(c => c.Clone());
+            return node;
         }
 
         protected void AddInput(string _name, string _displayName, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            Inputs.Add(new NodePort(_name, _displayName, _capacity));
+            Inputs.Add(new NodePort(_name, _displayName, typeof(float), _capacity));
         }
 
         protected void RemoveInput(NodePort _input)
@@ -98,9 +101,9 @@ namespace AIBehaviourTree.Node
             Inputs.Clear();
 		}
 
-        protected void AddOutput(string _name, string _displayName, Port.Capacity _capacity = Port.Capacity.Single)
+        protected void AddOutput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            Outputs.Add(new NodePort(_name, _displayName, _capacity));
+            Outputs.Add(new NodePort(_name, _displayName, _type, _capacity));
         }
 
         protected void RemoveOutput(NodePort _output)
@@ -121,5 +124,10 @@ namespace AIBehaviourTree.Node
             ClearInputs();
             ClearOutputs();
         }
+
+        public virtual string GetDescription()
+		{
+            return string.Empty;
+		}
     }
 }

@@ -67,7 +67,7 @@ namespace AIBehaviourTree.Node
 		{
 			foreach (var inputData in node.Inputs)
 			{
-				var input = InstantiatePort(portOrientation, Direction.Input, inputData.Capacity, typeof(float));
+				var input = InstantiatePort(portOrientation, Direction.Input, inputData.Capacity, inputData.Type);
 				input.portName = inputData.DisplayName;
 				inputContainer.Add(input);
 				Inputs.Add(input);
@@ -78,7 +78,7 @@ namespace AIBehaviourTree.Node
 		{
 			foreach(var outputData in node.Outputs)
 			{
-				var output = InstantiatePort(portOrientation, Direction.Output, outputData.Capacity, typeof(float));
+				var output = InstantiatePort(portOrientation, Direction.Output, outputData.Capacity, outputData.Type);
 				output.portName = outputData.DisplayName;
 				outputContainer.Add(output);
 				Outputs.Add(output);
@@ -102,6 +102,10 @@ namespace AIBehaviourTree.Node
 			else if (node is RootNode)
 			{
 				AddToClassList("node-root");
+			}
+			else if (node is VariableNode)
+			{
+				AddToClassList("node-variable");
 			}
 		}
 

@@ -28,5 +28,10 @@ namespace AIBehaviourTree.Node
 			}
 			return State.Running;
 		}
+
+		public override string GetDescription()
+		{
+			return $"Wait {duration} seconds";
+		}
 	}
 }

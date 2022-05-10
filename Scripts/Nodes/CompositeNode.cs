@@ -10,14 +10,7 @@ namespace AIBehaviourTree.Node
 		{
 			base.Initialize();
 			AddInput(DEFAULT_INPUT_NAME, "");
-			AddOutput(DEFAULT_OUTPUT_NAME, "", UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
-		}
-
-		public override Node Clone()
-		{
-			CompositeNode node = Instantiate(this);
-			node.Children = Children.ConvertAll(c => c.Clone());
-			return node;
+			AddOutput(DEFAULT_OUTPUT_NAME, "", typeof(float), UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
 		}
 	}
 }
