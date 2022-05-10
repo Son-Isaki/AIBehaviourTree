@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-    public class RootNode : Node
+	public class RootNode : Node
 	{
 		public override void Initialize()
 		{

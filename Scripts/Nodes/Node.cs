@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor.UIElements;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
 
 namespace AIBehaviourTree.Node
 {
@@ -40,7 +41,7 @@ namespace AIBehaviourTree.Node
 
         // Hides the node asset.
         // Sets up the name via type information.
-        void OnEnable()
+        private void OnEnable()
         {
             hideFlags = HideFlags.None;
             name = GetType().Name;
@@ -119,21 +120,6 @@ namespace AIBehaviourTree.Node
 		{
             ClearInputs();
             ClearOutputs();
-		}
-    }
-
-    [System.Serializable]
-    public class NodePort
-    {
-        [field: SerializeField] public string Name { get; set; }
-        public string DisplayName { get; set; }
-        public Port.Capacity Capacity { get; set; }
-
-        public NodePort (string _name, string _displayName, Port.Capacity _capacity = Port.Capacity.Single)
-        {
-            Name = _name;
-            DisplayName = _displayName;
-            Capacity = _capacity;
-		}
+        }
     }
 }
