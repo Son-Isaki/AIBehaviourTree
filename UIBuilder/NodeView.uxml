@@ -1,8 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="project://database/Assets/Packages/UnityAIBehaviourTree/UIBuilder/NodeView.uss?fileID=7433441132597879392&amp;guid=d408a72df5ec5084faf53f8ff5a630e7&amp;type=3#NodeView" />
     <ui:VisualElement name="node-state" />
-    <ui:VisualElement name="node-border">
+    <ui:VisualElement name="node-border" style="overflow: hidden;">
         <ui:VisualElement name="title">
+            <ui:VisualElement name="title-type" />
             <ui:Label name="title-label" text="Sequencer" class="unity-text-element unity-label" />
             <ui:VisualElement name="title-button-container">
                 <ui:VisualElement name="collapse-button">

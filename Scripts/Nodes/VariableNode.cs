@@ -7,7 +7,7 @@ namespace AIBehaviourTree.Node
 {
     public abstract class VariableNode : Node
     {
-        [SerializeField] new string name = "Variable";
+        [SerializeField] new string name;
 
         public abstract object GetValue();
 
