@@ -7,7 +7,7 @@ namespace AIBehaviourTree.Node
 {
     public abstract class VariableNode : Node
     {
-        [SerializeField] new string name;
+		[SerializeField] new string name = string.Empty;
 
         public abstract object GetValue();
 
@@ -16,16 +16,21 @@ namespace AIBehaviourTree.Node
             AddOutput("value", "Value", _type, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
 		}
 
-		public override string GetDescription()
+		public override string GetName()
 		{
-            if (name.Trim() != string.Empty)
+			if (name.Trim() != string.Empty)
 			{
-				return $"{name} : {GetValue()}";
+				return name;
 			}
 			else
 			{
-				return $"{GetValue()}";
+				return base.GetName();
 			}
+		}
+
+		public override string GetDescription()
+		{
+			return GetValue().ToString();
 		}
 	}
 }

@@ -26,9 +26,8 @@ namespace AIBehaviourTree.Node
 
         [field: SerializeField, HideInInspector] public string Guid { get; set; }
         [field: SerializeField, HideInInspector] public Vector2 Position { get; set; }
+        [SerializeField, HideInInspector] private string title;
         [SerializeField, HideInInspector] private string description;
-
-        public string Description => description;
 
         [HideInInspector] public Blackboard blackboard;
 
@@ -54,6 +53,8 @@ namespace AIBehaviourTree.Node
 
         public virtual void Initialize()
 		{
+            title = GetName();
+            description = GetDescription();
             ClearPorts();
 		}
 
@@ -125,9 +126,19 @@ namespace AIBehaviourTree.Node
             ClearOutputs();
         }
 
+        public virtual string GetName()
+        {
+            return NodeUtility.NicifyTypeName(GetType());
+        }
+
         public virtual string GetDescription()
-		{
+        {
             return string.Empty;
+        }
+
+        protected Type GetPortConnectionType()
+		{
+            return typeof(Node);
 		}
     }
 }

@@ -16,7 +16,9 @@ namespace AIBehaviourTree.Node
 		public Node node;
 		public List<Port> Inputs { get; } = new List<Port>();
 		public List<Port> Outputs { get; } = new List<Port>();
-		Label descriptionLabel;
+
+		private Label titleLabel;
+		private Label descriptionLabel;
 
 		private const Orientation portOrientation = Orientation.Horizontal;
 
@@ -41,6 +43,13 @@ namespace AIBehaviourTree.Node
 			CreateInputPorts();
 			CreateOutputPorts();
 			SetupClasses();
+
+			titleLabel = this.Q<Label>("title-label");
+			if (titleLabel != null)
+			{
+				titleLabel.bindingPath = "title";
+				titleLabel.Bind(new SerializedObject(node));
+			}
 
 			descriptionLabel = this.Q<Label>("description");
 			if (descriptionLabel != null)

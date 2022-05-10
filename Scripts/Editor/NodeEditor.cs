@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -9,21 +10,34 @@ namespace AIBehaviourTree.Node
     public class NodeEditor : Editor
     {
 		Node node;
+		SerializedProperty titleProp;
 		SerializedProperty descriptionProp;
 
 		private void OnEnable()
 		{
 			node = target as Node;
-			descriptionProp = serializedObject.FindProperty("description");
+			try
+			{
+				titleProp = serializedObject.FindProperty("title");
+				descriptionProp = serializedObject.FindProperty("description");
+			}
+			catch (Exception e)
+			{
+
+			}
 		}
 
 		public override void OnInspectorGUI()
 		{
 			base.OnInspectorGUI();
 
-			serializedObject.Update();
-			descriptionProp.stringValue = node.GetDescription();
-			serializedObject.ApplyModifiedProperties();
+			if (descriptionProp != null)
+			{
+				serializedObject.Update();
+				titleProp.stringValue = node.GetName();
+				descriptionProp.stringValue = node.GetDescription();
+				serializedObject.ApplyModifiedProperties();
+			}
 		}
 	}
 }

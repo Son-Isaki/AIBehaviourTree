@@ -108,7 +108,8 @@ namespace AIBehaviourTree.Node
 		{
 			return ports.ToList().Where(endPort => 
 				endPort.direction != startPort.direction && 
-				endPort.node != startPort.node
+				endPort.node != startPort.node &&
+				endPort.portType == startPort.portType
 			).ToList();
 		}
 
