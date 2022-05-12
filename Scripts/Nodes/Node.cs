@@ -11,8 +11,8 @@ namespace AIBehaviourTree.Node
 {
     public abstract class Node : ScriptableObject
     {
-        public const string DEFAULT_INPUT_NAME = "input";
-        public const string DEFAULT_OUTPUT_NAME = "output";
+        public const string N_INPUT = "input";
+        public const string N_OUTPUT = "output";
 
         public enum State
         {
@@ -29,7 +29,7 @@ namespace AIBehaviourTree.Node
         [SerializeField, HideInInspector] private string title;
         [SerializeField, HideInInspector] private string description;
 
-        [HideInInspector] public Blackboard blackboard;
+        [HideInInspector] public GameObject AttachedObject { get; private set; }
 
         protected abstract void OnStart();
         protected abstract void OnStop();
@@ -39,8 +39,6 @@ namespace AIBehaviourTree.Node
         [field: SerializeField, HideInInspector] public List<NodePort> Outputs { get; set; } = new List<NodePort>();
         [field: SerializeField, HideInInspector] public List<Node> Children { get; set; } = new List<Node>();
 
-        // Hides the node asset.
-        // Sets up the name via type information.
         private void OnEnable()
         {
             hideFlags = HideFlags.None;
@@ -84,9 +82,9 @@ namespace AIBehaviourTree.Node
             return node;
         }
 
-        protected void AddInput(string _name, string _displayName, Port.Capacity _capacity = Port.Capacity.Single)
+        protected void AddInput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            Inputs.Add(new NodePort(_name, _displayName, typeof(float), _capacity));
+            Inputs.Add(new NodePort(_name, _displayName, _type, _capacity));
         }
 
         protected void RemoveInput(NodePort _input)
@@ -136,9 +134,14 @@ namespace AIBehaviourTree.Node
             return string.Empty;
         }
 
-        protected Type GetPortConnectionType()
+        protected Type GetNodePortType()
 		{
             return typeof(Node);
+		}
+
+        public void SetAttachedObject(GameObject _attachedObject)
+		{
+            AttachedObject = _attachedObject;
 		}
     }
 }

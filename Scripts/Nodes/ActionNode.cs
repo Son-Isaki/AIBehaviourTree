@@ -9,7 +9,7 @@ namespace AIBehaviourTree.Node
         public override void Initialize()
         {
             base.Initialize();
-            AddInput(DEFAULT_INPUT_NAME, "");
+            AddInput(N_INPUT, "", GetNodePortType());
         }
     }
 }

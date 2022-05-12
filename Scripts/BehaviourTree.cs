@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -12,8 +13,9 @@ namespace AIBehaviourTree.Node
 		[SerializeField, HideInInspector] public Node rootNode;
 		[SerializeField, HideInInspector] public Node.State treeState = Node.State.Running;
 		[SerializeField, HideInInspector] public List<Node> nodes = new List<Node>();
+		[SerializeField, HideInInspector] public List<NodeEdge> edges = new List<NodeEdge>();
 
-		[SerializeField, HideInInspector] private Blackboard blackboard;
+		[HideInInspector] public GameObject AttachedObject { get; private set; }
 
 		public Node.State Update()
 		{
@@ -75,6 +77,36 @@ namespace AIBehaviourTree.Node
 				EditorUtility.SetDirty(parent);
 			}
 		}
+
+		public void AddEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
+		{
+			edges.Add(new NodeEdge(_outputNodeGuid, _outputPortName, _inputNodeGuid, _inputPortName));
+		}
+
+		public void RemoveEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
+		{
+			if (HasEdge(_outputNodeGuid, _outputPortName, _inputNodeGuid, _inputPortName))
+			{
+				var edgeToRemove = edges.Where(e =>
+					e.OutputNodeGuid == _outputNodeGuid &&
+					e.OutputPortName == _outputPortName &&
+					e.InputNodeGuid == _inputNodeGuid &&
+					e.InputPortName == _inputPortName
+				).ToList();
+				foreach (var edge in edgeToRemove)
+					edges.Remove(edge);
+			}
+		}
+
+		public bool HasEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
+		{
+			return edges.Where(e =>
+				e.OutputNodeGuid == _outputNodeGuid &&
+				e.OutputPortName == _outputPortName &&
+				e.InputNodeGuid == _inputNodeGuid &&
+				e.InputPortName == _inputPortName
+			).Count() > 0;
+		}
 #endif
 
 		public List<Node> GetChildren(Node parent)
@@ -94,9 +126,9 @@ namespace AIBehaviourTree.Node
 			return tree;
 		}
 
-		public void SetBlackboard(Blackboard _blackboard)
+		public void SetAttachedObject(GameObject _attachedObject)
 		{
-			blackboard = _blackboard;
+			AttachedObject = _attachedObject;
 		}
 
 		public void Traverse(Node node, System.Action<Node> visiter)
@@ -113,7 +145,7 @@ namespace AIBehaviourTree.Node
 		{
 			Traverse(rootNode, node =>
 			{
-				node.blackboard = blackboard;
+				node.SetAttachedObject(AttachedObject);
 			});
 		}
 	}

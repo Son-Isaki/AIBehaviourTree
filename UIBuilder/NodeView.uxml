@@ -5,6 +5,7 @@
         <ui:VisualElement name="title">
             <ui:VisualElement name="title-type" />
             <ui:Label name="title-label" text="Sequencer" class="unity-text-element unity-label" />
+            <ui:Label text="Description of this node" display-tooltip-when-elided="true" name="description" />
             <ui:VisualElement name="title-button-container">
                 <ui:VisualElement name="collapse-button">
                     <ui:VisualElement name="icon" />
@@ -12,11 +13,8 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="contents">
+            <ui:GroupBox name="properties" class="property-box" />
             <ui:VisualElement name="divider" class="horizontal" />
-            <ui:VisualElement name="description-container">
-                <ui:Label text="Label" display-tooltip-when-elided="true" name="description" />
-                <ui:VisualElement name="divider" class="horizontal" />
-            </ui:VisualElement>
             <ui:VisualElement name="top">
                 <ui:VisualElement name="input" />
                 <ui:VisualElement name="output" />

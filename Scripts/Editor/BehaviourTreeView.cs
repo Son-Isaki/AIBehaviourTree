@@ -34,10 +34,10 @@ namespace AIBehaviourTree.Node
 
 		private void AddManipulator()
 		{
-			this.AddManipulator(new ContentZoomer());
 			this.AddManipulator(new ContentDragger());
 			this.AddManipulator(new SelectionDragger());
 			this.AddManipulator(new RectangleSelector());
+			this.AddManipulator(new ContentZoomer());
 		}
 
 		private void AddSearchWindow()
@@ -77,30 +77,30 @@ namespace AIBehaviourTree.Node
 			tree.nodes.ForEach(node => CreateNodeView(node));
 
 			// create edges
-			tree.nodes.ForEach(parent => {
-				var children = tree.GetChildren(parent);
-				children.ForEach(child =>
+			tree.edges.ForEach(e =>
+			{
+				Node outputNode = tree.nodes.Where(n => n.Guid == e.OutputNodeGuid).First();
+				Node inputNode = tree.nodes.Where(n => n.Guid == e.InputNodeGuid).First();
+
+				if (outputNode != null && inputNode != null)
 				{
-					NodeView parentView = FindNodeView(parent);
-					NodeView childView = FindNodeView(child);
+					NodeView parentView = FindNodeView(outputNode);
+					NodeView childView = FindNodeView(inputNode);
 
-					try
+					if (parentView != null && childView != null)
 					{
-						if (parentView != null && childView != null)
-						{
-							int inputIndex = 0;
-							int outputIndex = parent.Children.IndexOf(child);
-							outputIndex = Mathf.Min(outputIndex, parentView.Outputs.Count - 1);
+						Port outputPort = parentView.Outputs.Where(p => p.name == e.OutputPortName).FirstOrDefault();
+						Port inputPort = childView.Inputs.Where(p => p.name == e.InputPortName).FirstOrDefault();
 
-							Edge edge = parentView.Outputs[outputIndex].ConnectTo(childView.Inputs[inputIndex]);
+						if (outputPort != null && inputPort != null)
+						{
+							Edge edge = parentView.Outputs.Where(p => p.name == e.OutputPortName).FirstOrDefault()
+								.ConnectTo(childView.Inputs.Where(p => p.name == e.InputPortName).FirstOrDefault());
+							
 							AddElement(edge);
 						}
 					}
-					catch (Exception e)
-					{
-						Debug.LogError($"{e}");
-					}
-				});
+				}
 			});
 		}
 
@@ -132,6 +132,8 @@ namespace AIBehaviourTree.Node
 						NodeView childView = edge.input.node as NodeView;
 						if (parentView != null && childView != null)
 						{
+							// Debug.Log($"Remove edge : {parentView.node.GetName()} ({edge.output.name}) => {childView.node.GetName()} ({edge.input.name})");
+							tree.RemoveEdge(parentView.node.Guid, edge.output.name, childView.node.Guid, edge.input.name);
 							tree.RemoveChild(parentView.node, childView.node);
 						}
 					}
@@ -145,6 +147,8 @@ namespace AIBehaviourTree.Node
 					NodeView parentView = edge.output.node as NodeView;
 					NodeView childView = edge.input.node as NodeView;
 					tree.AddChild(parentView.node, childView.node);
+					// Debug.Log($"Add edge : {parentView.node.GetName()} ({edge.output.name}) => {childView.node.GetName()} ({edge.input.name})");
+					tree.AddEdge(parentView.node.Guid, edge.output.name, childView.node.Guid, edge.input.name);
 					parentView.SortChildren();
 				});
 			}

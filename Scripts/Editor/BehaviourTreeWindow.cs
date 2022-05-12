@@ -19,20 +19,15 @@ namespace AIBehaviourTree.Node
 
         public static BehaviourTreeWindow CurrentWindow { get; private set; }
 
-        BehaviourTree currentTree;
-        Label treeTitleLabel;
-        BehaviourTreeView treeView;
-        InspectorView inspectorView;
-        IMGUIContainer blackboardView;
-        SerializedObject treeObject;
-        SerializedProperty blackboardProperty;
+        private BehaviourTree currentTree;
+        private BehaviourTreeView treeView;
+        private Label treeTitleLabel;
 
         [MenuItem("Window/Isaki/AI Behaviour Tree")]
         public static void OpenWindow()
         {
             CurrentWindow = GetWindow<BehaviourTreeWindow>();
             CurrentWindow.titleContent = new GUIContent("AI Behaviour Tree");
-            //CurrentWindow.position = new Rect(0, 0, 800, 600);
         }
 
         [OnOpenAsset]
@@ -46,103 +41,64 @@ namespace AIBehaviourTree.Node
             return false;
         }
 
-        public void CreateGUI()
-        {
-            // Each editor window contains a root VisualElement object
-            VisualElement root = rootVisualElement;
-
-            // Import UXML
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UIBUILDER_PATH + "BehaviourTreeEditor.uxml");
-            visualTree.CloneTree(root);
-
-            // A stylesheet can be added to a VisualElement.
-            // The style will be applied to the VisualElement and all of its children.
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(UIBUILDER_PATH + "BehaviourTreeEditor.uss");
-            root.styleSheets.Add(styleSheet);
-
-            treeTitleLabel = root.Q<Label>("tree-title");
-            treeView = root.Q<BehaviourTreeView>();
-            inspectorView = root.Q<InspectorView>();
-            blackboardView = root.Q<IMGUIContainer>();
-            blackboardView.onGUIHandler = () => {
-                if (treeObject != null && treeObject.targetObject != null)
-                {
-                    treeObject.Update();
-                    EditorGUILayout.PropertyField(blackboardProperty);
-                    treeObject.ApplyModifiedProperties();
-                }
-            };
-
-            treeView.OnNodeSelected = OnNodeSelectionChanged;
-            OnSelectionChange();
-        }
-
 		private void OnEnable()
 		{
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            Initialize();
+            Selection.selectionChanged += Initialize;
+			EditorApplication.playModeStateChanged += PlayModeStateChanged;
         }
 
 		private void OnDisable()
         {
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            rootVisualElement.Clear();
+            Selection.selectionChanged -= Initialize;
+            EditorApplication.playModeStateChanged -= PlayModeStateChanged;
         }
 
-		private void OnPlayModeStateChanged(PlayModeStateChange playModeState)
-		{
-			switch (playModeState)
-			{
-				case PlayModeStateChange.EnteredEditMode:
-                    OnSelectionChange();
-					break;
-				case PlayModeStateChange.ExitingEditMode:
-					break;
-				case PlayModeStateChange.EnteredPlayMode:
-                    OnSelectionChange();
-                    break;
-				case PlayModeStateChange.ExitingPlayMode:
-					break;
-			}
-		}
-
-        private void OnSelectionChange()
+        private void Initialize()
         {
-            if (Selection.activeObject is BehaviourTree tree)
+            rootVisualElement.Clear();
+
+            var box = new Box()
             {
-                currentTree = tree;
-            }
-            else
-            {
-                if (Selection.activeGameObject)
-                {
-                    BehaviourTreeRunner runner = Selection.activeGameObject.GetComponent<BehaviourTreeRunner>();
-                    if (runner)
-                    {
-                        currentTree = runner.Tree;
-                    }
+                style = {
+                    alignItems = Align.Center,
+                    justifyContent = Justify.Center,
                 }
+            };
+            box.StretchToParentSize();
+
+            if (Selection.activeObject == null || Selection.activeObject is not BehaviourTree)
+            {
+                var label = new Label($"Please select a Behaviour Tree");
+                box.Add(label);
+                rootVisualElement.Add(box);
+                return;
             }
 
-            if (currentTree != null)
+            currentTree = Selection.activeObject as BehaviourTree;
+
+            // Import UXML
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UIBUILDER_PATH + "BehaviourTreeEditor.uxml");
+            visualTree.CloneTree(rootVisualElement);
+
+            treeTitleLabel = rootVisualElement.Q<Label>("tree-title");
+            treeTitleLabel.text = currentTree.name;
+            treeView = rootVisualElement.Q<BehaviourTreeView>();
+
+            if (treeView != null)
             {
-                treeObject = new SerializedObject(currentTree);
-                blackboardProperty = treeObject.FindProperty("blackboard");
-                if (treeTitleLabel != null)
-                {
-                    treeTitleLabel.text = currentTree.name;
-                }
-                treeView?.PopulateView(currentTree);
+                treeView.PopulateView(currentTree);
+                treeView.OnNodeSelected = OnNodeSelectionChanged;
             }
+        }
+
+        private void PlayModeStateChanged(PlayModeStateChange mode)
+        {
         }
 
         void OnNodeSelectionChanged(NodeView nodeView)
 		{
-            inspectorView.UpdateSelection(nodeView);
-		}
-
-		private void OnInspectorUpdate()
-		{
-            treeView?.UpdateNodeStates();
 		}
 	}
 }

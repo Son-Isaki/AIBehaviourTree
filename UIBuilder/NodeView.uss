@@ -75,22 +75,13 @@
     min-height: 24px;
 }
 
-#output {
-}
-
-#input Label {
-}
-
-#output Label {
-}
-
 #title {
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: nowrap;
     flex-grow: 0;
     flex-basis: auto;
-    flex-shrink: 1;
-    padding-left: 10px;
+    flex-shrink: 0;
+    padding-left: 15px;
     padding-right: 10px;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -101,56 +92,37 @@
 }
 
 #title-label {
-    white-space: normal;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
     padding-left: 0;
     padding-right: 0;
     padding-top: 0;
     padding-bottom: 0;
     flex-grow: 0;
     flex-shrink: 1;
-    font-size: 13px;
+    font-size: 12px;
     -unity-font-style: bold;
 }
 
 #description {
-    -unity-text-align: upper-center;
-    font-size: 11px;
+    -unity-text-align: upper-left;
+    font-size: 10px;
     white-space: normal;
-    -unity-font-style: normal;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    flex-wrap: nowrap;
-}
-
-.hide {
-    display: none;
+    -unity-font-style: italic;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 #divider {
     background-color: rgb(32, 32, 32);
     flex-shrink: 0;
-    min-height: 1px;
 }
 
 #divider.horizontal {
-    background-color: rgb(32, 32, 32);
-    flex-shrink: 0;
     min-height: 1px;
 }
 
 #divider.vertical {
-    background-color: rgb(32, 32, 32);
-    flex-shrink: 0;
     min-width: 1px;
 }
 
@@ -198,7 +170,17 @@
     left: 0;
     top: 0;
     bottom: 0;
-    opacity: 1;
+}
+
+#properties {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .node-root #title-type {
@@ -219,4 +201,85 @@
 
 .node-variable #title-type {
     background-color: rgb(17, 138, 178);
+}
+
+.unity-base-field > Label {
+    min-width: 40px;
+}
+
+.unity-base-field .unity-base-field Label {
+    min-width: 10px;
+}
+
+.unity-base-field .unity-base-field__input {
+    min-width: 60px;
+}
+
+.unity-base-field .unity-base-field .unity-base-field__input {
+    width: 40px;
+}
+
+.unity-base-field .unity-composite-field__field-spacer {
+    flex-grow: 0;
+    width: 0;
+    min-width: 0;
+}
+
+Port.port > #connector {
+    width: 10px;
+    height: 10px;
+}
+
+Port.port > #connector > #cap {
+    width: 8px;
+    height: 8px;
+}
+
+Port.port.typeNode > #connector {
+    width: 12px;
+    height: 14px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+Port.port.typeNode > #connector > #cap {
+    width: 8px;
+    height: 10px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+Port.typeNode > #connector {
+    width: 12px;
+    height: 14px;
+}
+
+Port.input.typeNode > #connector {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+Port.port.typeNode > #connector > #cap {
+    width: 10px;
+    height: 12px;
+}
+
+Port.input.typeNode > #connector > #cap {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
+}
+
+Port.output.typeNode > #connector > #cap {
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 1px;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
 }

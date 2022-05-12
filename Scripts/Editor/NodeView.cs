@@ -22,6 +22,9 @@ namespace AIBehaviourTree.Node
 
 		private const Orientation portOrientation = Orientation.Horizontal;
 
+		private SerializedObject serializedNode;
+		private GroupBox propertyBox;
+
 		public NodeView(Node _node) : base(BehaviourTreeWindow.UIBUILDER_PATH + "NodeView.uxml")
 		{
 			node = _node;
@@ -58,39 +61,66 @@ namespace AIBehaviourTree.Node
 				descriptionLabel.Bind(new SerializedObject(node));
 				descriptionLabel.RegisterValueChangedCallback(OnDescriptionChanged);
 			}
+
+			serializedNode = new SerializedObject(node);
+			propertyBox = this.Q<GroupBox>("properties");
+			CreatePropertyBox(propertyBox, serializedNode);
 		}
 
 		private void OnDescriptionChanged(ChangeEvent<string> evt)
 		{
-			if (evt.newValue.Trim() == "")
-			{
-				descriptionLabel.parent.AddToClassList("hide");
-			}
-			else
-			{
-				descriptionLabel.parent.RemoveFromClassList("hide");
-			}
+			descriptionLabel.style.display = (evt.newValue.Trim() == string.Empty)
+				? DisplayStyle.None
+				: DisplayStyle.Flex;
 		}
 
 		private void CreateInputPorts()
 		{
-			foreach (var inputData in node.Inputs)
+			foreach (var input in node.Inputs)
 			{
-				var input = InstantiatePort(portOrientation, Direction.Input, inputData.Capacity, inputData.Type);
-				input.portName = inputData.DisplayName;
-				inputContainer.Add(input);
-				Inputs.Add(input);
+				Port port = InstantiatePort(portOrientation, Direction.Input, input.Capacity, input.Type);
+				SetupPort(ref port, input);
+				inputContainer.Add(port);
+				Inputs.Add(port);
 			}
 		}
 
 		private void CreateOutputPorts()
 		{
-			foreach(var outputData in node.Outputs)
+			foreach(var output in node.Outputs)
 			{
-				var output = InstantiatePort(portOrientation, Direction.Output, outputData.Capacity, outputData.Type);
-				output.portName = outputData.DisplayName;
-				outputContainer.Add(output);
-				Outputs.Add(output);
+				Port port = InstantiatePort(portOrientation, Direction.Output, output.Capacity, output.Type);
+				SetupPort(ref port, output);
+				outputContainer.Add(port);
+				Outputs.Add(port);
+			}
+		}
+
+		private void SetupPort(ref Port port, NodePort portData)
+		{
+			port.name = portData.Name;
+			port.portName = portData.DisplayName;
+			switch (portData.Type)
+			{
+				case Type nodeType when nodeType == typeof(Node):
+					port.portColor = NodeUtility.ToColor("FFFFFF");
+					break;
+				case Type stringType when stringType == typeof(string):
+					port.portColor = NodeUtility.ToColor("#fc05d0");
+					break;
+				case Type intType when intType == typeof(int):
+					port.portColor = NodeUtility.ToColor("#1fe4af");
+					break;
+				case Type floatType when floatType == typeof(float):
+					port.portColor = NodeUtility.ToColor("#9af53c");
+					break;
+				case Type boolType when boolType == typeof(bool):
+					port.portColor = NodeUtility.ToColor("#920000");
+					break;
+				case Type vector2Type when vector2Type == typeof(Vector2):
+				case Type vector3Type when vector3Type == typeof(Vector3):
+					port.portColor = NodeUtility.ToColor("#f8c61e");
+					break;
 			}
 		}
 
@@ -174,6 +204,27 @@ namespace AIBehaviourTree.Node
 						break;
 				}
 			}
+		}
+
+		private void CreatePropertyBox(GroupBox box, SerializedObject serializedObject)
+		{
+			box.contentContainer.Clear();
+
+			var iterator = serializedObject.GetIterator();
+			int propertyCount = 0;
+			if (iterator.NextVisible(true))
+			{
+				do
+				{
+					if (iterator.name == "m_Script") continue;
+					var field = new PropertyField(iterator);
+					field.Bind(serializedObject);
+					box.contentContainer.Add(field);
+					propertyCount++;
+				} while (iterator.NextVisible(false));
+			}
+
+			box.style.display = (propertyCount > 0) ? DisplayStyle.Flex : DisplayStyle.None;
 		}
 	}
 }

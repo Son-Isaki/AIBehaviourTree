@@ -7,7 +7,6 @@ namespace AIBehaviourTree.Node
 	public class BehaviourTreeRunner : MonoBehaviour
 	{
 		[field: SerializeField] public BehaviourTree Tree { get; private set; }
-		[field: SerializeField] public Blackboard Blackboard{ get; private set; }
 
 		private void Start()
 		{
@@ -15,7 +14,7 @@ namespace AIBehaviourTree.Node
 				return;
 
 			Tree = Tree.Clone();
-			Tree.SetBlackboard(Blackboard.Clone());
+			Tree.SetAttachedObject(gameObject);
 			Tree.Bind();
 		}
 
