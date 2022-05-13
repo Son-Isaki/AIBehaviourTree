@@ -33,7 +33,7 @@ namespace AIBehaviourTree.Node
 
         protected abstract void OnStart();
         protected abstract void OnStop();
-        protected abstract State OnUpdate();
+        protected abstract State Execute();
 
         [field: SerializeField, HideInInspector] public List<NodePort> Inputs { get; set; } = new List<NodePort>();
         [field: SerializeField, HideInInspector] public List<NodePort> Outputs { get; set; } = new List<NodePort>();
@@ -60,14 +60,16 @@ namespace AIBehaviourTree.Node
         {
             if (!HasStarted)
             {
+                Debug.Log($"{GetName()} OnStart()");
                 OnStart();
                 HasStarted = true;
             }
 
-            CurrentState = OnUpdate();
+            CurrentState = Execute();
 
             if (CurrentState == State.Failure || CurrentState == State.Success)
             {
+                Debug.Log($"{GetName()} OnStop()");
                 OnStop();
                 HasStarted = false;
             }
@@ -82,9 +84,11 @@ namespace AIBehaviourTree.Node
             return node;
         }
 
-        protected void AddInput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
+        protected NodePort AddInput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            Inputs.Add(new NodePort(_name, _displayName, _type, _capacity));
+            var port = new NodePort(_name, _displayName, _type, _capacity);
+            Inputs.Add(port);
+            return port;
         }
 
         protected void RemoveInput(NodePort _input)
@@ -100,9 +104,11 @@ namespace AIBehaviourTree.Node
             Inputs.Clear();
 		}
 
-        protected void AddOutput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
+        protected NodePort AddOutput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            Outputs.Add(new NodePort(_name, _displayName, _type, _capacity));
+            var port = new NodePort(_name, _displayName, _type, _capacity);
+            Outputs.Add(port);
+            return port;
         }
 
         protected void RemoveOutput(NodePort _output)

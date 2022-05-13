@@ -20,7 +20,7 @@ namespace AIBehaviourTree.Node
 
 		}
 
-		protected override State OnUpdate()
+		protected override State Execute()
 		{
 			for (int i = 0; i < Children.Count; i++) 
 				Children[i].Update();

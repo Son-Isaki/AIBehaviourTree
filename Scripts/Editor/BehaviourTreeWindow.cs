@@ -68,15 +68,25 @@ namespace AIBehaviourTree.Node
             };
             box.StretchToParentSize();
 
-            if (Selection.activeObject == null || Selection.activeObject is not BehaviourTree)
+            currentTree = null;
+
+            if (Selection.activeObject != null && Selection.activeObject is BehaviourTree)
+            {
+                currentTree = Selection.activeObject as BehaviourTree;
+            }
+
+            if (Selection.activeGameObject != null && Selection.activeGameObject.GetComponent<BehaviourTreeRunner>() != null)
+            {
+                currentTree = Selection.activeGameObject.GetComponent<BehaviourTreeRunner>().Tree;
+            }
+
+            if (currentTree == null)
             {
                 var label = new Label($"Please select a Behaviour Tree");
                 box.Add(label);
                 rootVisualElement.Add(box);
                 return;
             }
-
-            currentTree = Selection.activeObject as BehaviourTree;
 
             // Import UXML
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UIBUILDER_PATH + "BehaviourTreeEditor.uxml");
@@ -95,10 +105,16 @@ namespace AIBehaviourTree.Node
 
         private void PlayModeStateChanged(PlayModeStateChange mode)
         {
+            Initialize();
         }
 
         void OnNodeSelectionChanged(NodeView nodeView)
 		{
-		}
-	}
+        }
+
+        private void OnInspectorUpdate()
+        {
+            treeView?.UpdateNodeStates();
+        }
+    }
 }

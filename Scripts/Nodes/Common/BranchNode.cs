@@ -8,11 +8,13 @@ namespace AIBehaviourTree.Node
 	[Category("Logic")]
 	public class BranchNode : DecoratorNode
 	{
+		NodePort condition;
+
 		public override void Initialize()
 		{
 			base.Initialize();
 			ClearOutputs();
-			AddInput("check", "Condition", typeof(bool), UnityEditor.Experimental.GraphView.Port.Capacity.Single);
+			condition = AddInput("check", "Condition", typeof(bool), UnityEditor.Experimental.GraphView.Port.Capacity.Single);
 			AddOutput("true", "True", GetNodePortType());
 			AddOutput("false", "False", GetNodePortType());
 		}
@@ -25,8 +27,9 @@ namespace AIBehaviourTree.Node
 		{
 		}
 
-		protected override State OnUpdate()
+		protected override State Execute()
 		{
+
 			return State.Running;
 		}
 	}

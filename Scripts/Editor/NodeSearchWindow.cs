@@ -31,6 +31,7 @@ namespace AIBehaviourTree.Node
 
 			Dictionary<string, List<Type>> typesList = new Dictionary<string, List<Type>>();
 
+			AddTypesOfType(typeof(RootNode), ref typesList);
 			AddTypesOfType(typeof(ActionNode), ref typesList);
 			AddTypesOfType(typeof(CompositeNode), ref typesList);
 			AddTypesOfType(typeof(DecoratorNode), ref typesList);

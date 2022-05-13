@@ -13,17 +13,12 @@ namespace AIBehaviourTree.Node
 			if (Tree == null)
 				return;
 
-			Tree = Tree.Clone();
+			//Tree = Tree.Clone();
 			Tree.SetAttachedObject(gameObject);
 			Tree.Bind();
-		}
 
-		private void Update()
-		{
-			if (Tree == null)
-				return;
-
-			Tree.Update();
+			Tree.Execute(this, typeof(StartNode));
+			Tree.Execute(this, typeof(UpdateNode));
 		}
 	}
 }

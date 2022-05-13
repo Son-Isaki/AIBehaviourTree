@@ -66,21 +66,14 @@ namespace AIBehaviourTree.Node
 			DeleteElements(graphElements);
 			graphViewChanged += OnGraphViewChanged;
 
-			if (tree.rootNode == null)
-			{
-				tree.rootNode = tree.CreateNode(typeof(RootNode), Vector2.zero) as RootNode;
-				EditorUtility.SetDirty(tree);
-				AssetDatabase.SaveAssets();
-			}
-
 			// create node views
 			tree.nodes.ForEach(node => CreateNodeView(node));
 
 			// create edges
 			tree.edges.ForEach(e =>
 			{
-				Node outputNode = tree.nodes.Where(n => n.Guid == e.OutputNodeGuid).First();
-				Node inputNode = tree.nodes.Where(n => n.Guid == e.InputNodeGuid).First();
+				Node outputNode = tree.nodes.Where(n => n.Guid == e.OutputNodeGuid).FirstOrDefault();
+				Node inputNode = tree.nodes.Where(n => n.Guid == e.InputNodeGuid).FirstOrDefault();
 
 				if (outputNode != null && inputNode != null)
 				{
@@ -94,9 +87,7 @@ namespace AIBehaviourTree.Node
 
 						if (outputPort != null && inputPort != null)
 						{
-							Edge edge = parentView.Outputs.Where(p => p.name == e.OutputPortName).FirstOrDefault()
-								.ConnectTo(childView.Inputs.Where(p => p.name == e.InputPortName).FirstOrDefault());
-							
+							Edge edge = outputPort.ConnectTo(inputPort);
 							AddElement(edge);
 						}
 					}

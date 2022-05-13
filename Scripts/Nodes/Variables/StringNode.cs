@@ -5,14 +5,14 @@ using UnityEngine;
 namespace AIBehaviourTree.Node
 {
 	[Category("Variable")]
-	public class FloatNode : VariableNode
+	public class StringNode : VariableNode
 	{
-		[SerializeField] float value;
+		[SerializeField] string value;
 
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddVariableOutput(typeof(float));
+			AddVariableOutput(typeof(string));
 		}
 
 		protected override void OnStart()
@@ -23,7 +23,7 @@ namespace AIBehaviourTree.Node
 		{
 		}
 
-		protected override State OnUpdate()
+		protected override State Execute()
 		{
 			return State.Success;
 		}

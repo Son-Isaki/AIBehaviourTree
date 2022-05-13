@@ -33,12 +33,12 @@ namespace AIBehaviourTree.Node
 
 			node.Initialize();
 
-			if (node is RootNode)
+			/*if (node is RootNode)
 			{
 				capabilities &= ~Capabilities.Movable;
 				capabilities &= ~Capabilities.Deletable;
 				capabilities &= ~Capabilities.Copiable;
-			}
+			}*/
 
 			style.left = node.Position.x;
 			style.top = node.Position.y;

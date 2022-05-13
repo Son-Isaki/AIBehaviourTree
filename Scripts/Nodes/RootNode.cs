@@ -20,7 +20,7 @@ namespace AIBehaviourTree.Node
 		{
 		}
 
-		protected override State OnUpdate()
+		protected override State Execute()
 		{
 			if (Children.Count == 0)
 				return State.Success;

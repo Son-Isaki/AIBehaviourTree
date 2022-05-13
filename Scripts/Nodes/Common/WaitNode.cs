@@ -12,6 +12,7 @@ namespace AIBehaviourTree.Node
 
 		protected override void OnStart()
 		{
+			Debug.Log($"{GetName()} wait {duration} seconds");
 			startTime = Time.time;
 		}
 
@@ -20,18 +21,13 @@ namespace AIBehaviourTree.Node
 
 		}
 
-		protected override State OnUpdate()
+		protected override State Execute()
 		{
 			if (Time.time < startTime + duration)
 			{
 				return State.Success;
 			}
 			return State.Running;
-		}
-
-		public override string GetDescription()
-		{
-			return $"Wait {duration} seconds";
 		}
 	}
 }

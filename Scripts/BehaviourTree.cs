@@ -10,27 +10,61 @@ namespace AIBehaviourTree.Node
 	[CreateAssetMenu(menuName = "Isaki/AI Behaviour Tree/Behaviour Tree", order = 0)]
 	public class BehaviourTree : ScriptableObject
 	{
-		[SerializeField, HideInInspector] public Node rootNode;
 		[SerializeField, HideInInspector] public Node.State treeState = Node.State.Running;
 		[SerializeField, HideInInspector] public List<Node> nodes = new List<Node>();
 		[SerializeField, HideInInspector] public List<NodeEdge> edges = new List<NodeEdge>();
 
 		[HideInInspector] public GameObject AttachedObject { get; private set; }
 
-		public Node.State Update()
-		{
-			if (rootNode.CurrentState == Node.State.Running)
-			{
-				treeState = rootNode.Update();
+		public StartNode StartNode {
+			get {
+				if (startNode == null)
+				{
+					startNode = nodes.Where(n => n.GetType() == typeof(StartNode)).FirstOrDefault() as StartNode;
+				}
+				return startNode;
 			}
-			return treeState;
 		}
 
-#if UNITY_EDITOR
-		public Node CreateNode(System.Type type, Vector2 position)
+		public UpdateNode UpdateNode {
+			get {
+				if (startNode == null)
+				{
+					updateNode = nodes.Where(n => n.GetType() == typeof(UpdateNode)).FirstOrDefault() as UpdateNode;
+				}
+				return updateNode;
+			}
+		}
+
+		private StartNode startNode;
+		private UpdateNode updateNode;
+
+		public void Execute(BehaviourTreeRunner runner, Type nodeType)
 		{
-			Node node = ScriptableObject.CreateInstance(type) as Node;
-			node.name = NodeUtility.NicifyTypeName(type);
+			Node node = nodes.Where(n => n.GetType() == nodeType).FirstOrDefault();
+			if (node != null)
+			{
+				Debug.Log($"Start node execution : {node.GetType().Name}");
+				runner.StartCoroutine(Job(node));
+			}
+		}
+
+		private IEnumerator Job(Node node)
+		{
+			bool process = true;
+			while (process)
+			{
+				treeState = node.Update();
+				if (node is StartNode) process = false;
+				yield return null;
+			}
+			yield return null;
+		}
+
+		public Node CreateNode(Type type, Vector2 position)
+		{
+			Node node = CreateInstance(type) as Node;
+			node.name = node.GetName();
 			node.Guid = GUID.Generate().ToString();
 			node.Position = position;
 
@@ -87,27 +121,24 @@ namespace AIBehaviourTree.Node
 		{
 			if (HasEdge(_outputNodeGuid, _outputPortName, _inputNodeGuid, _inputPortName))
 			{
-				var edgeToRemove = edges.Where(e =>
+				edges.RemoveAll(e =>
 					e.OutputNodeGuid == _outputNodeGuid &&
 					e.OutputPortName == _outputPortName &&
 					e.InputNodeGuid == _inputNodeGuid &&
 					e.InputPortName == _inputPortName
-				).ToList();
-				foreach (var edge in edgeToRemove)
-					edges.Remove(edge);
+				);
 			}
 		}
 
 		public bool HasEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
 		{
-			return edges.Where(e =>
+			return edges.Exists(e =>
 				e.OutputNodeGuid == _outputNodeGuid &&
 				e.OutputPortName == _outputPortName &&
 				e.InputNodeGuid == _inputNodeGuid &&
 				e.InputPortName == _inputPortName
-			).Count() > 0;
+			);
 		}
-#endif
 
 		public List<Node> GetChildren(Node parent)
 		{
@@ -117,13 +148,28 @@ namespace AIBehaviourTree.Node
 		public BehaviourTree Clone()
 		{
 			BehaviourTree tree = Instantiate(this);
-			tree.rootNode = tree.rootNode.Clone();
-			tree.nodes = new List<Node>();
-			Traverse(tree.rootNode, (n) =>
+
+			if (tree.StartNode != null)
 			{
-				tree.nodes.Add(n);
-			});
-			return tree;
+				tree.startNode = tree.StartNode.Clone() as StartNode;
+				tree.nodes = new List<Node>();
+				Traverse(tree.startNode, (n) =>
+				{
+					tree.nodes.Add(n);
+				});
+			}
+
+			if (tree.UpdateNode != null)
+			{
+				tree.updateNode = tree.UpdateNode.Clone() as UpdateNode;
+				tree.nodes = new List<Node>();
+				Traverse(tree.updateNode, (n) =>
+				{
+					tree.nodes.Add(n);
+				});
+			}
+
+			return this;
 		}
 
 		public void SetAttachedObject(GameObject _attachedObject)
@@ -131,22 +177,31 @@ namespace AIBehaviourTree.Node
 			AttachedObject = _attachedObject;
 		}
 
-		public void Traverse(Node node, System.Action<Node> visiter)
+		public void Traverse(Node node, Action<Node> visiter)
 		{
-			if (node)
-			{
-				visiter.Invoke(node);
-				var children = GetChildren(node);
-				children.ForEach(n => Traverse(n, visiter));
-			}
+			if (node == null) return;
+
+			visiter.Invoke(node);
+			var children = GetChildren(node);
+			children.ForEach(n => Traverse(n, visiter));
 		}
 
 		public void Bind()
 		{
-			Traverse(rootNode, node =>
+			if (StartNode != null)
 			{
-				node.SetAttachedObject(AttachedObject);
-			});
+				Traverse(StartNode, node =>
+				{
+					node.SetAttachedObject(AttachedObject);
+				});
+			}
+			if (UpdateNode != null)
+			{
+				Traverse(UpdateNode, node =>
+				{
+					node.SetAttachedObject(AttachedObject);
+				});
+			}
 		}
 	}
 }
