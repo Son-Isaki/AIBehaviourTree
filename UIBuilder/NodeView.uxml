@@ -13,12 +13,12 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="contents">
-            <ui:GroupBox name="properties" class="property-box" />
-            <ui:VisualElement name="divider" class="horizontal" />
             <ui:VisualElement name="top">
                 <ui:VisualElement name="input" />
                 <ui:VisualElement name="output" />
             </ui:VisualElement>
+            <ui:VisualElement name="divider" class="horizontal" />
+            <ui:GroupBox name="properties" class="property-box" />
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="selection-border" picking-mode="Ignore" />

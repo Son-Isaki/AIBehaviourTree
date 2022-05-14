@@ -19,12 +19,5 @@ namespace AIBehaviourTree.Node
 		{
 			return State.Success;
 		}
-
-		public abstract object GetValue();
-
-		protected NodePort AddValueOutput(Type _type, string _name = "value")
-        {
-            return AddOutput(_name, NodeUtility.NicifyName(_name), _type, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
-		}
 	}
 }

@@ -11,7 +11,7 @@ namespace AIBehaviourTree.Node
 
 		protected override State Execute()
 		{
-			Debug.Log($"{GetName()} : {message}");
+			Debug.Log($"{AttachedObject.name} ({GetName()}) : {message}");
 			return State.Success;
 		}
 	}

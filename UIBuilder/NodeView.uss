@@ -13,7 +13,7 @@
     border-bottom-right-radius: 3px;
     flex-grow: 1;
     flex-wrap: wrap;
-    background-color: rgb(56, 56, 56);
+    background-color: rgb(48, 48, 48);
 }
 
 #selection-border {
@@ -88,7 +88,7 @@
     width: 100%;
     justify-content: center;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-    background-color: rgb(32, 32, 32);
+    background-color: rgb(25, 25, 25);
 }
 
 #title-label {
@@ -114,7 +114,7 @@
 }
 
 #divider {
-    background-color: rgb(32, 32, 32);
+    background-color: rgb(25, 25, 25);
     flex-shrink: 0;
 }
 

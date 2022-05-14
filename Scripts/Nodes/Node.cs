@@ -36,6 +36,10 @@ namespace AIBehaviourTree.Node
         protected abstract void OnStart();
         protected abstract void OnStop();
         protected abstract State Execute();
+        public virtual object GetValue()
+		{
+            return null;
+		}
 
         [field: SerializeField, HideInInspector] public List<NodePort> Inputs { get; set; } = new List<NodePort>();
         [field: SerializeField, HideInInspector] public List<NodePort> Outputs { get; set; } = new List<NodePort>();
@@ -107,6 +111,11 @@ namespace AIBehaviourTree.Node
             var port = new NodePort(_name, _displayName, PortType.Output, _type, _capacity);
             Outputs.Add(port);
             return port;
+        }
+
+        protected NodePort AddValueOutput(Type _type, string _name = "value")
+        {
+            return AddOutput(_name, NodeUtility.NicifyName(_name), _type, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
         }
 
         protected void RemoveOutput(NodePort _output)

@@ -127,6 +127,9 @@ namespace AIBehaviourTree.Node
 				case Type vector3Type when vector3Type == typeof(Vector3):
 					port.portColor = NodeUtility.ToColor("#f8c61e");
 					break;
+				case Type gameObjectType when gameObjectType == typeof(GameObject):
+					port.portColor = NodeUtility.ToColor("#01a4f1");
+					break;
 			}
 		}
 
