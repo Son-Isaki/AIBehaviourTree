@@ -15,33 +15,25 @@ namespace AIBehaviourTree.Node
 			count = 0;
 		}
 
-		protected override void OnStop()
-		{
-
-		}
-
 		protected override State Execute()
 		{
-			for (int i = 0; i < Children.Count; i++) 
-				Children[i].Update();
-
-			count++;
-			if (count >= loopCount)
+			for (count = 0; count < loopCount; count++)
 			{
-				return State.Success;
+				var node = GetLinkedNode(output);
+				node.Update();
 			}
-			return State.Running;
+			return State.Success;
 		}
 
 		public override string GetDescription()
 		{
-			if (loopCount <= 0)
+			if (loopCount > 1)
 			{
-				return $"Repeat indefinitely";
+				return $"Repeat {loopCount} times";
 			}
 			else
 			{
-				return $"Repeat {loopCount} times";
+				return $"Repeat {loopCount} time";
 			}
 		}
 	}

@@ -32,6 +32,9 @@ namespace AIBehaviourTree.Node
 			viewDataKey = node.Guid;
 			serializedNode = new SerializedObject(node);
 
+			var nodeBorder = this.Q<VisualElement>("node-border");
+			if (nodeBorder != null) nodeBorder.tooltip = $"Guid : {node.Guid}";
+
 			node.Initialize();
 
 			/*if (node is RootNode)

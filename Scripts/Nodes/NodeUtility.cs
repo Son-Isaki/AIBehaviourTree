@@ -13,6 +13,11 @@ namespace AIBehaviourTree.Node
             return ObjectNames.NicifyVariableName(type.Name.Replace("Node", "").Trim());
         }
 
+        public static string NicifyName(string name)
+        {
+            return ObjectNames.NicifyVariableName(name.Replace("Node", "").Trim());
+        }
+
         public static Color ToColor(string hex)
         {
             hex = hex.Replace("0x", "");

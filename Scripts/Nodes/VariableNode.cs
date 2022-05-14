@@ -7,11 +7,24 @@ namespace AIBehaviourTree.Node
 {
     public abstract class VariableNode : Node
     {
-        public abstract object GetValue();
+		protected override void OnStart()
+		{
+		}
 
-        protected void AddVariableOutput(Type _type)
+		protected override void OnStop()
+		{
+		}
+
+		protected override State Execute()
+		{
+			return State.Success;
+		}
+
+		public abstract object GetValue();
+
+		protected NodePort AddValueOutput(Type _type, string _name = "value")
         {
-            AddOutput("value", "Value", _type, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
+            return AddOutput(_name, NodeUtility.NicifyName(_name), _type, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
 		}
 	}
 }

@@ -16,11 +16,6 @@ namespace AIBehaviourTree.Node
 			startTime = Time.time;
 		}
 
-		protected override void OnStop()
-		{
-
-		}
-
 		protected override State Execute()
 		{
 			if (Time.time < startTime + duration)

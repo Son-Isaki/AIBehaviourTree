@@ -6,10 +6,22 @@ namespace AIBehaviourTree.Node
 {
     public abstract class ActionNode : Node
     {
+        [SerializeField, HideInInspector] protected NodePort input;
+
+        protected override void OnStart()
+        {
+
+        }
+
+        protected override void OnStop()
+        {
+
+        }
+
         public override void Initialize()
         {
             base.Initialize();
-            AddInput(N_INPUT, "");
+            input = AddInput(N_INPUT, "");
         }
     }
 }

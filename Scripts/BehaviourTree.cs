@@ -11,42 +11,15 @@ namespace AIBehaviourTree.Node
 	public class BehaviourTree : ScriptableObject
 	{
 		[SerializeField, HideInInspector] public Node.State treeState = Node.State.Running;
-		[SerializeField, HideInInspector] public List<Node> nodes = new List<Node>();
-		[SerializeField, HideInInspector] public List<NodeEdge> edges = new List<NodeEdge>();
+		[SerializeField] public List<Node> nodes = new List<Node>();
+		[SerializeField] public List<NodeEdge> edges = new List<NodeEdge>();
 
 		[HideInInspector] public GameObject AttachedObject { get; private set; }
 
-		public StartNode StartNode {
-			get {
-				if (startNode == null)
-				{
-					startNode = nodes.Where(n => n.GetType() == typeof(StartNode)).FirstOrDefault() as StartNode;
-				}
-				return startNode;
-			}
-		}
-
-		public UpdateNode UpdateNode {
-			get {
-				if (startNode == null)
-				{
-					updateNode = nodes.Where(n => n.GetType() == typeof(UpdateNode)).FirstOrDefault() as UpdateNode;
-				}
-				return updateNode;
-			}
-		}
-
-		private StartNode startNode;
-		private UpdateNode updateNode;
-
 		public void Execute(BehaviourTreeRunner runner, Type nodeType)
 		{
-			Node node = nodes.Where(n => n.GetType() == nodeType).FirstOrDefault();
-			if (node != null)
-			{
-				Debug.Log($"Start node execution : {node.GetType().Name}");
-				runner.StartCoroutine(Job(node));
-			}
+			nodes.Where(n => n.GetType() == nodeType).ToList()
+				.ForEach(n => runner.StartCoroutine(Job(n)));
 		}
 
 		private IEnumerator Job(Node node)
@@ -148,28 +121,24 @@ namespace AIBehaviourTree.Node
 		public BehaviourTree Clone()
 		{
 			BehaviourTree tree = Instantiate(this);
+			tree.name = $"{name} (Instance)";
+			tree.nodes = new List<Node>();
 
-			if (tree.StartNode != null)
+			foreach (var n in nodes.Where(n => n.GetType().IsSubclassOf(typeof(RootNode))))
 			{
-				tree.startNode = tree.StartNode.Clone() as StartNode;
-				tree.nodes = new List<Node>();
-				Traverse(tree.startNode, (n) =>
+				var rootNode = n.Clone();
+				Traverse(rootNode, (n) =>
 				{
 					tree.nodes.Add(n);
 				});
 			}
 
-			if (tree.UpdateNode != null)
+			foreach (var n in nodes.Where(n => n.GetType().IsSubclassOf(typeof(VariableNode))))
 			{
-				tree.updateNode = tree.UpdateNode.Clone() as UpdateNode;
-				tree.nodes = new List<Node>();
-				Traverse(tree.updateNode, (n) =>
-				{
-					tree.nodes.Add(n);
-				});
+				tree.nodes.Add(n);
 			}
 
-			return this;
+			return tree;
 		}
 
 		public void SetAttachedObject(GameObject _attachedObject)
@@ -182,27 +151,15 @@ namespace AIBehaviourTree.Node
 			if (node == null) return;
 
 			visiter.Invoke(node);
-			var children = GetChildren(node);
-			children.ForEach(n => Traverse(n, visiter));
+			GetChildren(node).ForEach(n => Traverse(n, visiter));
 		}
 
 		public void Bind()
 		{
-			if (StartNode != null)
+			foreach(var n in nodes)
 			{
-				Traverse(StartNode, node =>
-				{
-					node.SetTree(this);
-					node.SetAttachedObject(AttachedObject);
-				});
-			}
-			if (UpdateNode != null)
-			{
-				Traverse(UpdateNode, node =>
-				{
-					node.SetTree(this);
-					node.SetAttachedObject(AttachedObject);
-				});
+				n.SetTree(this);
+				n.SetAttachedObject(AttachedObject);
 			}
 		}
 

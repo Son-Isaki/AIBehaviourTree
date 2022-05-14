@@ -6,10 +6,12 @@ namespace AIBehaviourTree.Node
 {
 	public class RootNode : Node
 	{
+		[SerializeField, HideInInspector] protected NodePort output;
+
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddOutput(N_OUTPUT, "");
+			output = AddOutput(N_OUTPUT, "");
 		}
 
 		protected override void OnStart()
@@ -22,12 +24,11 @@ namespace AIBehaviourTree.Node
 
 		protected override State Execute()
 		{
-			if (Children.Count == 0)
-				return State.Success;
+			var nodes = GetLinkedNodes(output);
 
-			for (int i = 0; i < Children.Count; i++)
+			foreach (var node in nodes)
 			{
-				if (Children[i].Update() == State.Failure)
+				if (node.Update() == State.Failure)
 					return State.Failure;
 			}
 

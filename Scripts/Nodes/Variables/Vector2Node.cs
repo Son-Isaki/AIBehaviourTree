@@ -12,20 +12,7 @@ namespace AIBehaviourTree.Node
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddVariableOutput(typeof(Vector2));
-		}
-
-		protected override void OnStart()
-		{
-		}
-
-		protected override void OnStop()
-		{
-		}
-
-		protected override State Execute()
-		{
-			return State.Success;
+			AddValueOutput(typeof(Vector2));
 		}
 
 		public override object GetValue()

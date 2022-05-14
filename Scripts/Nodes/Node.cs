@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace AIBehaviourTree.Node
 {
-    public abstract class Node : ScriptableObject
+    public abstract class Node : ScriptableObject, IDisposable
     {
         public const string N_INPUT = "input";
         public const string N_OUTPUT = "output";
@@ -44,11 +44,7 @@ namespace AIBehaviourTree.Node
         private void OnEnable()
         {
             hideFlags = HideFlags.None;
-            name = GetType().Name;
-
-#if UNITY_EDITOR
-            name = NodeUtility.NicifyTypeName(GetType());
-#endif
+            name = GetName();
         }
 
         public virtual void Initialize()
@@ -154,6 +150,18 @@ namespace AIBehaviourTree.Node
 
         public Node GetLinkedNode(NodePort port)
         {
+            if (port == null)
+			{
+                Debug.Log($"port is null");
+                return null;
+            }
+
+            if (Tree.edges == null)
+            {
+                Debug.Log($"Tree.edges is null");
+                return null;
+            }
+
             NodeEdge edge = null;
             if (port.PortType == PortType.Input) 
                 edge = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).FirstOrDefault();
@@ -167,11 +175,49 @@ namespace AIBehaviourTree.Node
             return null;
         }
 
+        public List<Node> GetLinkedNodes(NodePort port)
+        {
+            List<Node> nodes = new List<Node>();
+
+            if (port == null)
+            {
+                Debug.Log($"port is null");
+                return nodes;
+            }
+
+            if (Tree.edges == null)
+            {
+                Debug.Log($"Tree.edges is null");
+                return nodes;
+            }
+
+            List<NodeEdge> edges = new List<NodeEdge>();
+            if (port.PortType == PortType.Input)
+                edges = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).ToList();
+            else
+                edges = Tree.edges.Where(e => e.OutputNodeGuid == Guid && e.OutputPortName == port.Name).ToList();
+
+            foreach(var edge in edges)
+            {
+                using (var node = Tree.GetNode(port.PortType == PortType.Input ? edge.OutputNodeGuid : edge.InputNodeGuid))
+                {
+                    nodes.Add(node);
+                }
+            }
+
+            return nodes;
+        }
+
         public T GetValue<T>(NodePort port)
         {
             VariableNode node = GetLinkedNode(port) as VariableNode;
             if (node != null) return (T)node.GetValue();
             return default(T);
         }
-    }
+
+        public void Dispose()
+        {
+
+        }
+	}
 }

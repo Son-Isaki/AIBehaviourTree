@@ -6,11 +6,13 @@ namespace AIBehaviourTree.Node
 {
     public abstract class DecoratorNode : Node
     {
+		[SerializeField, HideInInspector] protected NodePort input, output;
+
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddInput(N_INPUT, "");
-			AddOutput(N_OUTPUT, "");
+			input = AddInput(N_INPUT, "");
+			output = AddOutput(N_OUTPUT, "");
 		}
 
 		protected override void OnStart()

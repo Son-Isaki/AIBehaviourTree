@@ -9,16 +9,6 @@ namespace AIBehaviourTree.Node
 	{
 		public string message;
 
-		protected override void OnStart()
-		{
-
-		}
-
-		protected override void OnStop()
-		{
-
-		}
-
 		protected override State Execute()
 		{
 			Debug.Log($"{GetName()} : {message}");

@@ -70,6 +70,7 @@ namespace AIBehaviourTree.Node
 			tree.nodes.ForEach(node => CreateNodeView(node));
 
 			// create edges
+			List<NodeEdge> edgesToRemove = new List<NodeEdge>();
 			tree.edges.ForEach(e =>
 			{
 				Node outputNode = tree.nodes.Where(n => n.Guid == e.OutputNodeGuid).FirstOrDefault();
@@ -89,10 +90,18 @@ namespace AIBehaviourTree.Node
 						{
 							Edge edge = outputPort.ConnectTo(inputPort);
 							AddElement(edge);
+							return;
 						}
 					}
 				}
+				edgesToRemove.Add(e);
 			});
+
+			// remove broken edges
+			foreach (var edge in edgesToRemove)
+			{
+				tree.RemoveEdge(edge.OutputNodeGuid, edge.OutputPortName, edge.InputNodeGuid, edge.InputPortName);
+			}
 		}
 
 		public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
