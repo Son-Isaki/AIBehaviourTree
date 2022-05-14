@@ -9,7 +9,7 @@ namespace AIBehaviourTree.Node
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddOutput(N_OUTPUT, "", GetNodePortType());
+			AddOutput(N_OUTPUT, "");
 		}
 
 		protected override void OnStart()

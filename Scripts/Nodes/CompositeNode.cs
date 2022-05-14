@@ -9,8 +9,8 @@ namespace AIBehaviourTree.Node
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddInput(N_INPUT, "", GetNodePortType());
-			AddOutput(N_OUTPUT, "", GetNodePortType(), UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
+			AddInput(N_INPUT, "");
+			AddOutput(N_OUTPUT, "", null, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
 		}
 	}
 }

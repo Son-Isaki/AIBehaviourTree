@@ -30,6 +30,7 @@ namespace AIBehaviourTree.Node
 			node = _node;
 			title = node.name;
 			viewDataKey = node.Guid;
+			serializedNode = new SerializedObject(node);
 
 			node.Initialize();
 
@@ -47,22 +48,24 @@ namespace AIBehaviourTree.Node
 			CreateOutputPorts();
 			SetupClasses();
 
+			// description label
 			titleLabel = this.Q<Label>("title-label");
 			if (titleLabel != null)
 			{
 				titleLabel.bindingPath = "title";
-				titleLabel.Bind(new SerializedObject(node));
+				titleLabel.Bind(serializedNode);
 			}
 
+			// description label
 			descriptionLabel = this.Q<Label>("description");
 			if (descriptionLabel != null)
 			{
 				descriptionLabel.bindingPath = "description";
-				descriptionLabel.Bind(new SerializedObject(node));
+				descriptionLabel.Bind(serializedNode);
 				descriptionLabel.RegisterValueChangedCallback(OnDescriptionChanged);
 			}
 
-			serializedNode = new SerializedObject(node);
+			// node properties
 			propertyBox = this.Q<GroupBox>("properties");
 			CreatePropertyBox(propertyBox, serializedNode);
 		}

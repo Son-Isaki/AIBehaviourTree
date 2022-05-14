@@ -21,6 +21,7 @@ namespace AIBehaviourTree.Node
 
 		protected override State Execute()
 		{
+			Debug.Log($"{GetName()} : {message}");
 			return State.Success;
 		}
 	}

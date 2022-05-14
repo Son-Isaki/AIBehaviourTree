@@ -13,7 +13,7 @@ namespace AIBehaviourTree.Node
 			if (Tree == null)
 				return;
 
-			//Tree = Tree.Clone();
+			Tree = Tree.Clone();
 			Tree.SetAttachedObject(gameObject);
 			Tree.Bind();
 

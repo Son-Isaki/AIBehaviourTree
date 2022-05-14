@@ -7,20 +7,28 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-    [System.Serializable]
+    [Serializable]
     public class NodePort
     {
-        [field: SerializeField] public string Name { get; set; }
-        public string DisplayName { get; set; }
-        public Type Type { get; set; }
-        public Port.Capacity Capacity { get; set; }
 
-        public NodePort(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
+        [field: SerializeField] public string Name { get; set; }
+        [field: SerializeField] public string DisplayName { get; set; }
+        [field: SerializeField] public PortType PortType { get; set; }
+        [field: SerializeField] public Type Type { get; set; }
+        [field: SerializeField] public Port.Capacity Capacity { get; set; }
+
+        public NodePort(string _name, string _displayName, PortType _portType, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
         {
             Name = _name;
             DisplayName = _displayName;
+            PortType = _portType;
             Type = _type;
             Capacity = _capacity;
         }
+    }
+    public enum PortType
+    {
+        Input,
+        Output,
     }
 }

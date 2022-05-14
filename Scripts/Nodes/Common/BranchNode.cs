@@ -8,29 +8,27 @@ namespace AIBehaviourTree.Node
 	[Category("Logic")]
 	public class BranchNode : DecoratorNode
 	{
-		NodePort condition;
+		NodePort condition, outputTrue, outputFalse;
 
 		public override void Initialize()
 		{
 			base.Initialize();
 			ClearOutputs();
 			condition = AddInput("check", "Condition", typeof(bool), UnityEditor.Experimental.GraphView.Port.Capacity.Single);
-			AddOutput("true", "True", GetNodePortType());
-			AddOutput("false", "False", GetNodePortType());
-		}
-
-		protected override void OnStart()
-		{
-		}
-
-		protected override void OnStop()
-		{
+			outputTrue = AddOutput("true", "True");
+			outputFalse = AddOutput("false", "False");
 		}
 
 		protected override State Execute()
 		{
-
-			return State.Running;
+			if (GetValue<bool>(condition))
+			{
+				return GetLinkedNode(outputTrue).Update();
+			}
+			else
+			{
+				return GetLinkedNode(outputFalse).Update();
+			}
 		}
 	}
 }

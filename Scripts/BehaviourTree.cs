@@ -192,6 +192,7 @@ namespace AIBehaviourTree.Node
 			{
 				Traverse(StartNode, node =>
 				{
+					node.SetTree(this);
 					node.SetAttachedObject(AttachedObject);
 				});
 			}
@@ -199,9 +200,15 @@ namespace AIBehaviourTree.Node
 			{
 				Traverse(UpdateNode, node =>
 				{
+					node.SetTree(this);
 					node.SetAttachedObject(AttachedObject);
 				});
 			}
+		}
+
+		public Node GetNode(string guid)
+		{
+			return nodes.Where(n => n.Guid == guid).FirstOrDefault();
 		}
 	}
 }

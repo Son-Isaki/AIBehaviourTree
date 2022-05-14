@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 using System;
+using System.Linq;
 
 namespace AIBehaviourTree.Node
 {
@@ -23,6 +24,7 @@ namespace AIBehaviourTree.Node
 
         public State CurrentState { get; protected set; } = State.Running;
         public bool HasStarted { get; protected set; } = false;
+        public BehaviourTree Tree { get; private set; }
 
         [field: SerializeField, HideInInspector] public string Guid { get; set; }
         [field: SerializeField, HideInInspector] public Vector2 Position { get; set; }
@@ -60,7 +62,6 @@ namespace AIBehaviourTree.Node
         {
             if (!HasStarted)
             {
-                Debug.Log($"{GetName()} OnStart()");
                 OnStart();
                 HasStarted = true;
             }
@@ -69,7 +70,6 @@ namespace AIBehaviourTree.Node
 
             if (CurrentState == State.Failure || CurrentState == State.Success)
             {
-                Debug.Log($"{GetName()} OnStop()");
                 OnStop();
                 HasStarted = false;
             }
@@ -84,9 +84,10 @@ namespace AIBehaviourTree.Node
             return node;
         }
 
-        protected NodePort AddInput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
+        protected NodePort AddInput(string _name, string _displayName, Type _type = null, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            var port = new NodePort(_name, _displayName, _type, _capacity);
+            if (_type == null) _type = typeof(Node);
+            var port = new NodePort(_name, _displayName, PortType.Input, _type, _capacity);
             Inputs.Add(port);
             return port;
         }
@@ -104,9 +105,10 @@ namespace AIBehaviourTree.Node
             Inputs.Clear();
 		}
 
-        protected NodePort AddOutput(string _name, string _displayName, Type _type, Port.Capacity _capacity = Port.Capacity.Single)
+        protected NodePort AddOutput(string _name, string _displayName, Type _type = null, Port.Capacity _capacity = Port.Capacity.Single)
         {
-            var port = new NodePort(_name, _displayName, _type, _capacity);
+            if (_type == null) _type = typeof(Node);
+            var port = new NodePort(_name, _displayName, PortType.Output, _type, _capacity);
             Outputs.Add(port);
             return port;
         }
@@ -140,14 +142,36 @@ namespace AIBehaviourTree.Node
             return string.Empty;
         }
 
-        protected Type GetNodePortType()
+        public void SetTree(BehaviourTree tree)
 		{
-            return typeof(Node);
+            Tree = tree;
 		}
 
         public void SetAttachedObject(GameObject _attachedObject)
 		{
             AttachedObject = _attachedObject;
-		}
+        }
+
+        public Node GetLinkedNode(NodePort port)
+        {
+            NodeEdge edge = null;
+            if (port.PortType == PortType.Input) 
+                edge = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).FirstOrDefault();
+            else 
+                edge = Tree.edges.Where(e => e.OutputNodeGuid == Guid && e.OutputPortName == port.Name).FirstOrDefault();
+
+            if (edge != null)
+            {
+                return Tree.GetNode(port.PortType == PortType.Input ? edge.OutputNodeGuid : edge.InputNodeGuid);
+            }
+            return null;
+        }
+
+        public T GetValue<T>(NodePort port)
+        {
+            VariableNode node = GetLinkedNode(port) as VariableNode;
+            if (node != null) return (T)node.GetValue();
+            return default(T);
+        }
     }
 }
