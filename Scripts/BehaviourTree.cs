@@ -11,25 +11,25 @@ namespace AIBehaviourTree.Node
 	public class BehaviourTree : ScriptableObject
 	{
 		[SerializeField, HideInInspector] public Node.State treeState = Node.State.Running;
-		[SerializeField] public List<Node> nodes = new List<Node>();
-		[SerializeField] public List<NodeEdge> edges = new List<NodeEdge>();
+		[SerializeField, HideInInspector] public List<Node> nodes = new List<Node>();
+		[SerializeField, HideInInspector] public List<NodeEdge> edges = new List<NodeEdge>();
 
 		[HideInInspector] public GameObject AttachedObject { get; private set; }
 
-		public void Execute(BehaviourTreeRunner runner, Type nodeType)
+		public void Execute(BehaviourTreeRunner runner, Type nodeType, float tickInterval)
 		{
 			nodes.Where(n => n.GetType() == nodeType).ToList()
-				.ForEach(n => runner.StartCoroutine(Job(n)));
+				.ForEach(n => runner.StartCoroutine(Job(n, tickInterval)));
 		}
 
-		private IEnumerator Job(Node node)
+		private IEnumerator Job(Node node, float tickInterval)
 		{
 			bool process = true;
 			while (process)
 			{
 				treeState = node.Update();
 				if (node is StartNode) process = false;
-				yield return null;
+				yield return new WaitForSeconds(tickInterval);
 			}
 			yield return null;
 		}

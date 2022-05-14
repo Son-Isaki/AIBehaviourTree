@@ -156,12 +156,6 @@ namespace AIBehaviourTree.Node
                 return null;
             }
 
-            if (Tree.edges == null)
-            {
-                Debug.Log($"Tree.edges is null");
-                return null;
-            }
-
             NodeEdge edge = null;
             if (port.PortType == PortType.Input) 
                 edge = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).FirstOrDefault();
@@ -182,12 +176,6 @@ namespace AIBehaviourTree.Node
             if (port == null)
             {
                 Debug.Log($"port is null");
-                return nodes;
-            }
-
-            if (Tree.edges == null)
-            {
-                Debug.Log($"Tree.edges is null");
                 return nodes;
             }
 
