@@ -75,6 +75,11 @@ namespace AIBehaviourTree.Node
 			}
 		}
 
+		public void RemoveNode(Node node)
+		{
+			nodes.Remove(node);
+		}
+
 		public void RemoveChild(Node parent, Node child)
 		{
 			if (parent.Children.Contains(child))
@@ -88,6 +93,11 @@ namespace AIBehaviourTree.Node
 		public void AddEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
 		{
 			edges.Add(new NodeEdge(_outputNodeGuid, _outputPortName, _inputNodeGuid, _inputPortName));
+		}
+
+		public void RemoveEdge(NodeEdge edge)
+		{
+			RemoveEdge(edge.OutputNodeGuid, edge.OutputPortName, edge.InputNodeGuid, edge.InputPortName);
 		}
 
 		public void RemoveEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
