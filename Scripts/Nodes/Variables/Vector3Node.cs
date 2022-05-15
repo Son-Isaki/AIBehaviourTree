@@ -12,7 +12,7 @@ namespace AIBehaviourTree.Node
 		public override void Initialize()
 		{
 			base.Initialize();
-			AddValueOutput(typeof(Vector3));
+			output = AddValueOutput(typeof(Vector3));
 		}
 
 		public override object GetValue()

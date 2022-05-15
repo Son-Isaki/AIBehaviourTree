@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-    public abstract class VariableNode : Node
-    {
+	public abstract class VariableNode : Node
+	{
+		[SerializeField, HideInInspector] protected NodePort output;
+
 		protected override void OnStart()
 		{
 		}

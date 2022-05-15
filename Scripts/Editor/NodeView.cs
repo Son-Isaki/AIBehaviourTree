@@ -109,7 +109,7 @@ namespace AIBehaviourTree.Node
 			switch (portData.Type)
 			{
 				case Type nodeType when nodeType == typeof(Node):
-					port.portColor = NodeUtility.ToColor("FFFFFF");
+					port.portColor = NodeUtility.ToColor("#ffffff");
 					break;
 				case Type stringType when stringType == typeof(string):
 					port.portColor = NodeUtility.ToColor("#fc05d0");

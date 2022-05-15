@@ -7,7 +7,6 @@ namespace AIBehaviourTree.Node
 	[Category("Variable")]
 	public class BoolNode : VariableNode
 	{
-		[SerializeField, HideInInspector] protected NodePort output;
 		[SerializeField] bool value;
 
 		public override void Initialize()
