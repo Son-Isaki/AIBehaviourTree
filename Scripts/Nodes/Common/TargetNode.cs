@@ -4,20 +4,19 @@ using UnityEngine;
 
 namespace AIBehaviourTree.Node
 {
-	[Category("Variable")]
-	public class StringNode : CustomVariableNode
+	[Category("Common")]
+	public class TargetNode : VariableNode
 	{
-		[SerializeField] string value;
-
 		public override void Initialize()
 		{
 			base.Initialize();
-			output = AddValueOutput(typeof(string));
+			output = AddValueOutput(typeof(GameObject));
+			SetDescription("GameObject the tree is attached to");
 		}
 
 		public override object GetValue()
 		{
-			return value;
+			return Target;
 		}
 	}
 }

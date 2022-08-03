@@ -5,14 +5,14 @@ using UnityEngine;
 namespace AIBehaviourTree.Node
 {
 	[Category("Debug")]
-	public class DebugNode : ActionNode
+	public class DebugTextNode : DecoratorNode
 	{
 		public string message;
 
 		protected override State Execute()
 		{
-			Debug.Log($"{AttachedObject.name} ({GetName()}) : {message}");
-			return State.Success;
+			Debug.Log($"{Target.name} ({GetName()}) : {message}");
+			return base.Execute();
 		}
 	}
 }

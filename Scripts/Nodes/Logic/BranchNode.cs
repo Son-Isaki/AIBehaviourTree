@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,13 +22,13 @@ namespace AIBehaviourTree.Node
 
 		protected override State Execute()
 		{
-			if (GetValue<bool>(condition))
+			if (GetInputValue<bool>(condition))
 			{
-				return GetLinkedNode(outputTrue)?.Update() ?? State.Failure;
+				return GetOutputNodes(outputTrue).FirstOrDefault()?.Update() ?? State.Failure;
 			}
 			else
 			{
-				return GetLinkedNode(outputFalse)?.Update() ?? State.Failure;
+				return GetOutputNodes(outputFalse).FirstOrDefault()?.Update() ?? State.Failure;
 			}
 		}
 	}

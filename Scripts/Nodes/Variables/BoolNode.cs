@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AIBehaviourTree.Node
 {
 	[Category("Variable")]
-	public class BoolNode : VariableNode
+	public class BoolNode : CustomVariableNode
 	{
 		[SerializeField] bool value;
 

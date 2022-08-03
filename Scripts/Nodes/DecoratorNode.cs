@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AIBehaviourTree.Node
@@ -21,6 +22,11 @@ namespace AIBehaviourTree.Node
 
 		protected override void OnStop()
 		{
+		}
+
+		protected override State Execute()
+		{
+			return GetOutputNodes(output).FirstOrDefault()?.Update() ?? State.Failure;
 		}
 	}
 }

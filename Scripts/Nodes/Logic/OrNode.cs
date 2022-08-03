@@ -21,7 +21,7 @@ namespace AIBehaviourTree.Node
 
 		public override object GetValue()
 		{
-			return (GetValue<bool>(cond1) && GetValue<bool>(cond2));
+			return (GetInputValue<bool>(cond1) && GetInputValue<bool>(cond2));
 		}
 
 		public override string GetName() => "Or";

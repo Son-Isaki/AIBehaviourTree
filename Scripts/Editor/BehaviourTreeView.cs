@@ -20,7 +20,7 @@ namespace AIBehaviourTree.Node
 
 		public BehaviourTreeView()
 		{
-			var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeWindow.UIBUILDER_PATH + "BehaviourTreeEditor.uss");
+			var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeUtility.GetPath("BehaviourTreeEditor.uss"));
 			styleSheets.Add(styleSheet);
 
 			GridBackground grid = new GridBackground();
@@ -154,7 +154,8 @@ namespace AIBehaviourTree.Node
 					NodeView childView = edge.input.node as NodeView;
 					tree.AddChild(parentView.node, childView.node);
 					// Debug.Log($"Add edge : {parentView.node.GetName()} ({edge.output.name}) => {childView.node.GetName()} ({edge.input.name})");
-					tree.AddEdge(parentView.node.Guid, edge.output.name, childView.node.Guid, edge.input.name);
+					//tree.AddEdge(parentView.node.Guid, edge.output.name, childView.node.Guid, edge.input.name);
+					tree.AddEdge(parentView.node, edge.output.name, childView.node, edge.input.name);
 					parentView.SortChildren();
 				});
 			}

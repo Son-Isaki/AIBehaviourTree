@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AIBehaviourTree.Node
 {
 	[Category("Variable")]
-	public class Vector3Node : VariableNode
+	public class Vector3Node : CustomVariableNode
 	{
 		[SerializeField] Vector3 value;
 

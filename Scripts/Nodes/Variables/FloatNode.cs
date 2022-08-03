@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AIBehaviourTree.Node
 {
 	[Category("Variable")]
-	public class FloatNode : VariableNode
+	public class FloatNode : CustomVariableNode
 	{
 		[SerializeField] float value;
 

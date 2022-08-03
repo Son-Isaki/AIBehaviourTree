@@ -24,7 +24,7 @@ namespace AIBehaviourTree.Node
 
 		protected override State Execute()
 		{
-			var nodes = GetLinkedNodes(output);
+			var nodes = GetOutputNodes(output);
 
 			foreach (var node in nodes)
 			{

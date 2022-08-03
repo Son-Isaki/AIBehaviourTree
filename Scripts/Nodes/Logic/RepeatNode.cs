@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AIBehaviourTree.Node
@@ -19,8 +20,7 @@ namespace AIBehaviourTree.Node
 		{
 			for (count = 0; count < loopCount; count++)
 			{
-				var node = GetLinkedNode(output);
-				node.Update();
+				GetOutputNodes(output).FirstOrDefault()?.Update();
 			}
 			return State.Success;
 		}

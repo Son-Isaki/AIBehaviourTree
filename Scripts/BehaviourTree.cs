@@ -12,17 +12,26 @@ namespace AIBehaviourTree.Node
 	{
 		[SerializeField, HideInInspector] public Node.State treeState = Node.State.Running;
 		[SerializeField, HideInInspector] public List<Node> nodes = new List<Node>();
-		[SerializeField, HideInInspector] public List<NodeEdge> edges = new List<NodeEdge>();
+		[SerializeField] public List<NodeEdge> edges = new List<NodeEdge>();
 
-		[HideInInspector] public GameObject AttachedObject { get; private set; }
+		[HideInInspector] public GameObject Target { get; private set; }
+
+		public void InitializeRuntime()
+		{
+			nodes.ForEach(node =>
+			{
+				node.Initialize();
+			});
+		}
 
 		public void Execute(BehaviourTreeRunner runner, Type nodeType, float tickInterval)
 		{
-			nodes.Where(n => n.GetType() == nodeType).ToList()
-				.ForEach(n => runner.StartCoroutine(Job(n, tickInterval)));
+			nodes.Where(n => n.GetType() == nodeType)
+				.ToList()
+				.ForEach(n => runner.StartCoroutine(ProcessNode(n, tickInterval)));
 		}
 
-		private IEnumerator Job(Node node, float tickInterval)
+		private IEnumerator ProcessNode(Node node, float tickInterval)
 		{
 			bool process = true;
 			while (process)
@@ -90,9 +99,9 @@ namespace AIBehaviourTree.Node
 			}
 		}
 
-		public void AddEdge(string _outputNodeGuid, string _outputPortName, string _inputNodeGuid, string _inputPortName)
+		public void AddEdge(Node _outputNode, string _outputPortName, Node _inputNode, string _inputPortName)
 		{
-			edges.Add(new NodeEdge(_outputNodeGuid, _outputPortName, _inputNodeGuid, _inputPortName));
+			edges.Add(new NodeEdge(_outputNode, _outputPortName, _inputNode, _inputPortName));
 		}
 
 		public void RemoveEdge(NodeEdge edge)
@@ -151,9 +160,9 @@ namespace AIBehaviourTree.Node
 			return tree;
 		}
 
-		public void SetAttachedObject(GameObject _attachedObject)
+		public void SetTarget(GameObject _target)
 		{
-			AttachedObject = _attachedObject;
+			Target = _target;
 		}
 
 		public void Traverse(Node node, Action<Node> visiter)
@@ -169,7 +178,7 @@ namespace AIBehaviourTree.Node
 			foreach(var n in nodes)
 			{
 				n.SetTree(this);
-				n.SetAttachedObject(AttachedObject);
+				n.SetTarget(Target);
 			}
 		}
 

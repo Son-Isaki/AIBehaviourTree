@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.UIElements;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine.UIElements;
 using System;
 using System.Linq;
 
@@ -31,7 +29,7 @@ namespace AIBehaviourTree.Node
         [SerializeField, HideInInspector] private string title;
         [SerializeField, HideInInspector] private string description;
 
-        [HideInInspector] public GameObject AttachedObject { get; private set; }
+        [HideInInspector] public GameObject Target { get; private set; }
 
         protected abstract void OnStart();
         protected abstract void OnStop();
@@ -56,7 +54,7 @@ namespace AIBehaviourTree.Node
             title = GetName();
             description = GetDescription();
             ClearPorts();
-		}
+        }
 
         public State Update()
         {
@@ -84,8 +82,9 @@ namespace AIBehaviourTree.Node
             return node;
         }
 
-        protected NodePort AddInput(string _name, string _displayName, Type _type = null, Port.Capacity _capacity = Port.Capacity.Single)
+        protected NodePort AddInput(string _name, string _displayName = null, Type _type = null, Port.Capacity _capacity = Port.Capacity.Single)
         {
+            if (_displayName == null) _displayName = NodeUtility.NicifyName(_name);
             if (_type == null) _type = typeof(Node);
             var port = new NodePort(_name, _displayName, PortType.Input, _type, _capacity);
             Inputs.Add(port);
@@ -115,7 +114,7 @@ namespace AIBehaviourTree.Node
 
         protected NodePort AddValueOutput(Type _type, string _name = "value")
         {
-            return AddOutput(_name, NodeUtility.NicifyName(_name), _type, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
+            return AddOutput(_name, NodeUtility.NicifyName(_name), _type, Port.Capacity.Multi);
         }
 
         protected void RemoveOutput(NodePort _output)
@@ -137,66 +136,69 @@ namespace AIBehaviourTree.Node
             ClearOutputs();
         }
 
-        public virtual string GetName()
-        {
-            return NodeUtility.NicifyTypeName(GetType());
-        }
+        public virtual string GetName() => NodeUtility.NicifyTypeName(GetType());
 
-        public virtual string GetDescription()
-        {
-            return string.Empty;
-        }
+        public virtual string GetDescription() => string.Empty;
+
+        public virtual void SetDescription(string newDescription) => description = newDescription;
 
         public void SetTree(BehaviourTree tree)
 		{
             Tree = tree;
 		}
 
-        public void SetAttachedObject(GameObject _attachedObject)
+        public void SetTarget(GameObject newTarget)
 		{
-            AttachedObject = _attachedObject;
+            Target = newTarget;
         }
 
-        public Node GetLinkedNode(NodePort port)
+        public Node GetInputNode(NodePort port)
         {
             if (port == null)
-			{
-                Debug.Log($"port is null");
+            {
+                Debug.Log($"{Target.name}.{GetType().Name} : Port is null");
                 return null;
             }
 
-            NodeEdge edge = null;
-            if (port.PortType == PortType.Input) 
-                edge = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).FirstOrDefault();
-            else 
-                edge = Tree.edges.Where(e => e.OutputNodeGuid == Guid && e.OutputPortName == port.Name).FirstOrDefault();
-
-            if (edge != null)
+            if (port.PortType == PortType.Output)
             {
-                return Tree.GetNode(port.PortType == PortType.Input ? edge.OutputNodeGuid : edge.InputNodeGuid);
+                Debug.Log($"{Target.name}.{GetType().Name} : This is not an input port");
+                return null;
             }
-            return null;
+
+            var edge = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).SingleOrDefault();
+
+            if (edge == null)
+            {
+                Debug.Log($"{Target.name}.{GetType().Name} : No corresponding edge found");
+                return null;
+            }
+
+            var portName = edge.OutputPortName;
+            return Tree.GetNode(edge.OutputNodeGuid);
         }
 
-        public List<Node> GetLinkedNodes(NodePort port)
+        public List<Node> GetOutputNodes(NodePort port)
         {
             List<Node> nodes = new List<Node>();
 
             if (port == null)
             {
-                Debug.Log($"port is null");
-                return nodes;
+                Debug.Log($"{Target.name}.{GetType().Name} : Port is null");
+                return null;
             }
 
-            List<NodeEdge> edges = new List<NodeEdge>();
             if (port.PortType == PortType.Input)
-                edges = Tree.edges.Where(e => e.InputNodeGuid == Guid && e.InputPortName == port.Name).ToList();
-            else
-                edges = Tree.edges.Where(e => e.OutputNodeGuid == Guid && e.OutputPortName == port.Name).ToList();
-
-            foreach(var edge in edges)
             {
-                using (var node = Tree.GetNode(port.PortType == PortType.Input ? edge.OutputNodeGuid : edge.InputNodeGuid))
+                Debug.Log($"{Target.name}.{GetType().Name} : This is not an output port");
+                return null;
+            }
+
+            var edges = Tree.edges.Where(e => e.OutputNodeGuid == Guid && e.OutputPortName == port.Name).ToList();
+
+            foreach (var edge in edges)
+            {
+                using (var node = Tree.GetNode(edge.InputNodeGuid))
                 {
                     nodes.Add(node);
                 }
@@ -205,11 +207,21 @@ namespace AIBehaviourTree.Node
             return nodes;
         }
 
-        public T GetValue<T>(NodePort port)
+        public T GetInputValue<T>(NodePort port)
         {
-            VariableNode node = GetLinkedNode(port) as VariableNode;
-            if (node != null) return (T)node.GetValue();
-            return default(T);
+            if (port == null)
+			{
+                throw new Exception($"{GetType().Name}.GetValue() : A port of this node isn't initialized. Check the Initialize() method");
+			}
+
+            var node = GetInputNode(port);
+
+            if (node == null)
+            {
+                return default(T);
+            }
+
+            return (T)node.GetValue();
         }
 
         public void Dispose()

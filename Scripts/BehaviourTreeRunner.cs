@@ -7,7 +7,7 @@ namespace AIBehaviourTree.Node
 	public class BehaviourTreeRunner : MonoBehaviour
 	{
 		[field: SerializeField] public BehaviourTree Tree { get; private set; }
-		[SerializeField, Range(.001f, .25f)] private float tickInterval = .05f;
+		[SerializeField, Range(.001f, 1f)] private float tickInterval = .05f;
 
 		private void Start()
 		{
@@ -15,9 +15,10 @@ namespace AIBehaviourTree.Node
 				return;
 
 			Tree = Tree.Clone();
-			Tree.SetAttachedObject(gameObject);
+			Tree.SetTarget(gameObject);
 			Tree.Bind();
 
+			Tree.InitializeRuntime();
 			Tree.Execute(this, typeof(StartNode), tickInterval);
 			Tree.Execute(this, typeof(UpdateNode), tickInterval);
 		}

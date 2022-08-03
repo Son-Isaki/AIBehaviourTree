@@ -14,6 +14,7 @@ namespace AIBehaviourTree.Node
 			input = AddInput(N_INPUT, "");
 			output = AddOutput(N_OUTPUT, "", null, UnityEditor.Experimental.GraphView.Port.Capacity.Multi);
 		}
+
 		protected override void OnStart()
 		{
 		}

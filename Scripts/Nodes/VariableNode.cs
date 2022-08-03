@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,11 @@ namespace AIBehaviourTree.Node
 	public abstract class VariableNode : Node
 	{
 		[SerializeField, HideInInspector] protected NodePort output;
+
+		public override void Initialize()
+		{
+			base.Initialize();
+		}
 
 		protected override void OnStart()
 		{

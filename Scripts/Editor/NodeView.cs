@@ -7,6 +7,7 @@ using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using System.Linq;
+using System.Reflection;
 
 namespace AIBehaviourTree.Node
 {
@@ -19,14 +20,18 @@ namespace AIBehaviourTree.Node
 
 		private Label titleLabel;
 		private Label descriptionLabel;
+		private Label variableNameLabel;
 
 		private const Orientation portOrientation = Orientation.Horizontal;
 
 		private SerializedObject serializedNode;
 		private GroupBox propertyBox;
 
-		public NodeView(Node _node) : base(BehaviourTreeWindow.UIBUILDER_PATH + "NodeView.uxml")
+		public NodeView(Node _node) : base(BehaviourTreeUtility.GetPath("NodeView.uxml"))
 		{
+			var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeUtility.GetPath("NodeView.uss"));
+			styleSheets.Add(styleSheet);
+
 			node = _node;
 			title = node.name;
 			viewDataKey = node.Guid;
@@ -37,12 +42,12 @@ namespace AIBehaviourTree.Node
 
 			node.Initialize();
 
-			/*if (node is RootNode)
+			if (node is RootNode)
 			{
-				capabilities &= ~Capabilities.Movable;
-				capabilities &= ~Capabilities.Deletable;
+				//capabilities &= ~Capabilities.Movable;
+				//capabilities &= ~Capabilities.Deletable;
 				capabilities &= ~Capabilities.Copiable;
-			}*/
+			}
 
 			style.left = node.Position.x;
 			style.top = node.Position.y;
@@ -63,9 +68,20 @@ namespace AIBehaviourTree.Node
 			descriptionLabel = this.Q<Label>("description");
 			if (descriptionLabel != null)
 			{
+				descriptionLabel.text = string.Empty;
 				descriptionLabel.bindingPath = "description";
 				descriptionLabel.Bind(serializedNode);
 				descriptionLabel.RegisterValueChangedCallback(OnDescriptionChanged);
+			}
+
+			// variable name label
+			variableNameLabel = this.Q<Label>("variableName");
+			if (variableNameLabel != null)
+			{
+				variableNameLabel.text = string.Empty;
+				variableNameLabel.bindingPath = "variableName";
+				variableNameLabel.Bind(serializedNode);
+				variableNameLabel.RegisterValueChangedCallback(OnDescriptionChanged);
 			}
 
 			// node properties
@@ -75,7 +91,10 @@ namespace AIBehaviourTree.Node
 
 		private void OnDescriptionChanged(ChangeEvent<string> evt)
 		{
-			descriptionLabel.style.display = (evt.newValue.Trim() == string.Empty)
+			descriptionLabel.style.display = (descriptionLabel.text.Trim() == string.Empty)
+				? DisplayStyle.None
+				: DisplayStyle.Flex;
+			variableNameLabel.style.display = (variableNameLabel.text.Trim() == string.Empty)
 				? DisplayStyle.None
 				: DisplayStyle.Flex;
 		}
@@ -109,26 +128,32 @@ namespace AIBehaviourTree.Node
 			switch (portData.Type)
 			{
 				case Type nodeType when nodeType == typeof(Node):
-					port.portColor = NodeUtility.ToColor("#ffffff");
-					break;
-				case Type stringType when stringType == typeof(string):
-					port.portColor = NodeUtility.ToColor("#fc05d0");
-					break;
-				case Type intType when intType == typeof(int):
-					port.portColor = NodeUtility.ToColor("#1fe4af");
-					break;
-				case Type floatType when floatType == typeof(float):
-					port.portColor = NodeUtility.ToColor("#9af53c");
+					port.portColor = NodeUtility.ToColor("#feffff");
 					break;
 				case Type boolType when boolType == typeof(bool):
-					port.portColor = NodeUtility.ToColor("#920000");
+					port.portColor = NodeUtility.ToColor("#910202");
+					break;
+				case Type stringType when stringType == typeof(string):
+					port.portColor = NodeUtility.ToColor("#fe00d4");
+					break;
+				case Type intType when intType == typeof(int):
+					port.portColor = NodeUtility.ToColor("#22e1af");
+					break;
+				case Type floatType when floatType == typeof(float):
+					port.portColor = NodeUtility.ToColor("#3bd305");
 					break;
 				case Type vector2Type when vector2Type == typeof(Vector2):
 				case Type vector3Type when vector3Type == typeof(Vector3):
-					port.portColor = NodeUtility.ToColor("#f8c61e");
+					port.portColor = NodeUtility.ToColor("#ffca24");
 					break;
 				case Type gameObjectType when gameObjectType == typeof(GameObject):
-					port.portColor = NodeUtility.ToColor("#01a4f1");
+					port.portColor = NodeUtility.ToColor("#10a5e9");
+					break;
+				case Type transformType when transformType == typeof(Transform):
+					port.portColor = NodeUtility.ToColor("#fb7407");
+					break;
+				case Type quaternionType when quaternionType == typeof(Quaternion):
+					port.portColor = NodeUtility.ToColor("#a0b4ff");
 					break;
 			}
 		}
@@ -226,14 +251,24 @@ namespace AIBehaviourTree.Node
 				do
 				{
 					if (iterator.name == "m_Script") continue;
-					var field = new PropertyField(iterator);
+
+					var label = GetSerializedFieldTitle<NaughtyAttributes.LabelAttribute>(iterator)?.Label ?? iterator.displayName;
+					var field = new PropertyField(iterator, label);
 					field.Bind(serializedObject);
+
 					box.contentContainer.Add(field);
 					propertyCount++;
 				} while (iterator.NextVisible(false));
 			}
 
 			box.style.display = (propertyCount > 0) ? DisplayStyle.Flex : DisplayStyle.None;
+		}
+
+		private T GetSerializedFieldTitle<T>(SerializedProperty serializedProperty) where T : Attribute
+		{
+			var obj = serializedProperty.serializedObject.targetObject;
+			var fieldInfo = obj.GetType().GetField(serializedProperty.name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+			return fieldInfo?.GetCustomAttribute<T>(true);
 		}
 	}
 }

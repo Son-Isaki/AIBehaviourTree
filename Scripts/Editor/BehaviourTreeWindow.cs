@@ -8,9 +8,6 @@ namespace AIBehaviourTree.Node
 {
     public class BehaviourTreeWindow : EditorWindow
     {
-        public const string BASE_PATH = "Assets/Packages/UnityAIBehaviourTree/";
-        public const string UIBUILDER_PATH = BASE_PATH + "UIBuilder/";
-
         public static Vector2 CurrentPosition {
 			get {
                 return GetWindow<BehaviourTreeWindow>().position.position;
@@ -75,10 +72,10 @@ namespace AIBehaviourTree.Node
                 currentTree = Selection.activeObject as BehaviourTree;
             }
 
-            if (Selection.activeGameObject != null && Selection.activeGameObject.GetComponent<BehaviourTreeRunner>() != null)
+            /*if (Selection.activeGameObject != null && Selection.activeGameObject.GetComponent<BehaviourTreeRunner>() != null)
             {
                 currentTree = Selection.activeGameObject.GetComponent<BehaviourTreeRunner>().Tree;
-            }
+            }*/
 
             if (currentTree == null)
             {
@@ -89,7 +86,7 @@ namespace AIBehaviourTree.Node
             }
 
             // Import UXML
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UIBUILDER_PATH + "BehaviourTreeEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeUtility.GetPath("BehaviourTreeEditor.uxml"));
             visualTree.CloneTree(rootVisualElement);
 
             treeTitleLabel = rootVisualElement.Q<Label>("tree-title");
